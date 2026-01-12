@@ -6,15 +6,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+/* ===== LAYOUT FIX (FOOTER FIT) ===== */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.main {
+  flex: 1;
+}
+
+/* ===== THEME ===== */
 :root {
   --bg: #f4f6f8;
   --card: #ffffff;
-  --text: #000000;
+  --text: #000;
   --muted: #666;
   --border: #ccc;
   --primary: #1e88e5;
 }
-
 body.dark {
   --bg: #121212;
   --card: #1e1e1e;
@@ -30,6 +44,7 @@ body {
   color: var(--text);
 }
 
+/* ===== CARD ===== */
 .container {
   max-width: 420px;
   margin: auto;
@@ -40,8 +55,7 @@ body {
   position: relative;
 }
 
-h2 { text-align: center; }
-
+h2 { text-align: center; margin-bottom: 10px; }
 label { font-weight: bold; }
 
 input[type="text"],
@@ -67,6 +81,7 @@ input[type="tel"] {
   color: var(--muted);
 }
 
+/* ===== BUTTON ===== */
 button {
   width: 100%;
   padding: 12px;
@@ -83,7 +98,7 @@ button.enabled {
   opacity: 1;
 }
 
-/* SUCCESS */
+/* ===== SUCCESS ===== */
 .successIcon {
   margin: 15px auto;
   width: 70px;
@@ -103,10 +118,12 @@ button.enabled {
   font-size: 14px;
   margin-top: 15px;
 }
+.ref {
+  font-weight: bold;
+  margin-top: 10px;
+}
 
-.ref { font-weight: bold; margin-top: 10px; }
-
-/* WATERMARK */
+/* ===== WATERMARK ===== */
 .watermark {
   position: absolute;
   top: 45%;
@@ -119,16 +136,26 @@ button.enabled {
   display: none;
 }
 
-/* FOOTER */
+/* ===== DARK MODE TOGGLE ===== */
+.toggle {
+  text-align: right;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+/* ===== FOOTER ===== */
 .footer {
-  margin-top: 30px;
   text-align: center;
   font-size: 11px;
   color: var(--muted);
+  margin-top: 20px;
 }
 .footer a {
   color: var(--muted);
   text-decoration: none;
+}
+.footer a:hover {
+  text-decoration: underline;
 }
 .divider {
   height: 2px;
@@ -139,31 +166,26 @@ button.enabled {
   font-size: 11px;
   margin-top: 6px;
 }
-
-/* TOGGLE */
-.toggle {
-  text-align: right;
-  font-size: 12px;
-  margin-bottom: 8px;
-}
-.toggle input {
-  transform: scale(1.1);
-}
 </style>
 </head>
 
 <body>
+<div class="page">
 
+<!-- DARK MODE -->
 <div class="toggle">
   🌙 Dark Mode
   <input type="checkbox" id="darkToggle" onchange="toggleDark()">
 </div>
+
+<div class="main">
 
 <!-- FORM -->
 <div class="container" id="formBox">
   <h2>📄 AGENCY INFORMATION SUBMISSION</h2>
 
   <form onsubmit="return submitForm();">
+
     <label>Agency Name</label>
     <input type="text" id="agency" placeholder="Example: ABC COLLECTION AGENCY" required>
 
@@ -216,6 +238,8 @@ button.enabled {
   </p>
 </div>
 
+</div>
+
 <!-- FOOTER -->
 <div class="footer">
   <div class="divider"></div>
@@ -224,6 +248,8 @@ button.enabled {
     Information submitted is collected solely for communication and
     administrative record purposes.
   </div>
+</div>
+
 </div>
 
 <script>
@@ -241,9 +267,8 @@ if (localStorage.getItem("dark") === "true") {
 
 /* BUTTON */
 function toggleBtn() {
-  const btn = document.getElementById("submitBtn");
-  btn.disabled = !document.getElementById("consent").checked;
-  btn.classList.toggle("enabled", !btn.disabled);
+  submitBtn.disabled = !consent.checked;
+  submitBtn.classList.toggle("enabled", !submitBtn.disabled);
 }
 
 /* PHONE */
@@ -291,7 +316,7 @@ function submitForm() {
 
   formBox.style.display = "none";
   successBox.style.display = "block";
-  document.getElementById("watermark").style.display = "block";
+  watermark.style.display = "block";
 
   refDisplay.innerText = "Reference No: " + ref;
   summaryBox.innerHTML =
@@ -304,7 +329,7 @@ function submitForm() {
   return false;
 }
 
-/* FOOTER */
+/* FOOTER TEXT */
 (function () {
   const year = new Date().getFullYear();
   document.getElementById("trademark").innerHTML =
