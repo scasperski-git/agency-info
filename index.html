@@ -41,9 +41,7 @@ h2 {
   margin-bottom: 8px;
 }
 
-label {
-  font-weight: bold;
-}
+label { font-weight: bold; }
 
 input[type="text"],
 input[type="tel"] {
@@ -53,7 +51,7 @@ input[type="tel"] {
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
-  text-transform: uppercase; /* FORCE UPPERCASE WHILE TYPING */
+  text-transform: uppercase;
 }
 
 ::placeholder {
@@ -111,9 +109,7 @@ button.enabled {
   margin: 15px auto;
   width: 70px;
 }
-.successIcon svg {
-  width: 100%;
-}
+.successIcon svg { width: 100%; }
 
 .ref {
   font-weight: bold;
@@ -122,7 +118,6 @@ button.enabled {
   font-size: 14px;
 }
 
-/* FORCE UPPERCASE FOR ALL USER DATA DISPLAY */
 .summary {
   font-size: 14px;
   margin-top: 10px;
@@ -141,6 +136,21 @@ button.enabled {
   font-weight: bold;
   display: none;
   pointer-events: none;
+}
+
+/* ===== MAINTENANCE ===== */
+.maintenance {
+  max-width: 420px;
+  margin: auto;
+  background: #ffffff;
+  padding: 25px 20px;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  text-align: center;
+}
+.maintenance p {
+  font-size: 13px;
+  color: #555;
 }
 
 /* ===== FOOTER ===== */
@@ -163,6 +173,20 @@ button.enabled {
 </head>
 
 <body>
+
+<script>
+/* ===== ON / OFF MODE ===== */
+var FORM_ENABLED = true; // true = ON | false = OFF
+</script>
+
+<!-- MAINTENANCE -->
+<div class="maintenance" id="maintenanceBox" style="display:none;">
+  <h2>🚧 Temporarily Unavailable</h2>
+  <p>
+    This submission form is currently unavailable.<br><br>
+    Please try again later or contact the administrator.
+  </p>
+</div>
 
 <!-- FORM -->
 <div class="container" id="formBox">
@@ -215,9 +239,7 @@ button.enabled {
   </div>
 
   <h2>Submission Successful</h2>
-
   <div class="ref" id="refDisplay"></div>
-
   <div class="summary" id="summaryBox"></div>
 
   <div class="consent" style="margin-top:15px;">
@@ -240,6 +262,16 @@ button.enabled {
 </div>
 
 <script>
+/* ===== PAGE LOAD ===== */
+window.onload = function () {
+  if (!FORM_ENABLED) {
+    formBox.style.display = "none";
+    successBox.style.display = "none";
+    maintenanceBox.style.display = "block";
+  }
+};
+
+/* ===== VALIDATION & SUBMIT ===== */
 const mandatoryFields = [
   { id: "agency", err: "err_agency" },
   { id: "pic1", err: "err_pic1" },
@@ -266,88 +298,67 @@ function generateRef() {
 }
 
 function updateState() {
-  let firstError = null;
   let ok = true;
-
   mandatoryFields.forEach(f => {
-    const input = document.getElementById(f.id);
-    const err = document.getElementById(f.err);
-
-    if (!input.value.trim()) {
+    const i = document.getElementById(f.id);
+    const e = document.getElementById(f.err);
+    if (!i.value.trim()) {
       ok = false;
-      input.classList.add("error");
-      err.style.display = "block";
-      if (!firstError) firstError = input;
+      i.classList.add("error");
+      e.style.display = "block";
     } else {
-      input.classList.remove("error");
-      err.style.display = "none";
+      i.classList.remove("error");
+      e.style.display = "none";
     }
   });
 
-  if (!ok) {
-    submitBtn.disabled = true;
-    submitBtn.classList.remove("enabled");
-    helperText.innerText = "Please complete all mandatory fields.";
-    if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
-    return;
-  }
-
-  if (!consent.checked) {
-    submitBtn.disabled = true;
-    submitBtn.classList.remove("enabled");
-    helperText.innerText = "Please confirm consent to proceed.";
-    return;
-  }
-
-  submitBtn.disabled = false;
-  submitBtn.classList.add("enabled");
-  helperText.innerText = "";
+  submitBtn.disabled = !ok || !consent.checked;
+  submitBtn.classList.toggle("enabled", !submitBtn.disabled);
+  helperText.innerText = !ok
+    ? "Please complete all mandatory fields."
+    : !consent.checked
+    ? "Please confirm consent to proceed."
+    : "";
 }
 
-mandatoryFields.forEach(f => {
-  document.getElementById(f.id).addEventListener("input", updateState);
-});
+mandatoryFields.forEach(f =>
+  document.getElementById(f.id).addEventListener("input", updateState)
+);
 
 function submitForm() {
   updateState();
   if (submitBtn.disabled) return false;
 
   const ref = generateRef();
-
-    const data = new URLSearchParams();
+  const data = new URLSearchParams();
   data.append("ref", ref);
-data.append("agency", agency.value.toUpperCase());
-data.append("pic1", pic1.value.toUpperCase());
-data.append("pic2", pic2.value ? pic2.value.toUpperCase() : "");
-data.append("contact1", contact1.value);
-data.append("contact2", contact2.value);
-data.append("whatsapp", whatsapp.value);
-data.append("consent", "YES");
+  data.append("agency", agency.value.toUpperCase());
+  data.append("pic1", pic1.value.toUpperCase());
+  data.append("pic2", pic2.value.toUpperCase());
+  data.append("contact1", contact1.value);
+  data.append("contact2", contact2.value);
+  data.append("whatsapp", whatsapp.value);
+  data.append("consent", "YES");
 
-
-  fetch("https://script.google.com/macros/s/AKfycbx8DYT7cJ2tVURhO_ecoYnyEKrhdENH8wg3BHCH0RPJTmS8duYZXynltbDrpq4zx8kY/exec", {
-    method: "POST",
-    body: data
-  });
-
+  fetch("PASTE_YOUR_WEB_APP_URL_HERE", { method: "POST", body: data });
 
   formBox.style.display = "none";
   successBox.style.display = "block";
   watermark.style.display = "block";
 
   refDisplay.innerText = "REFERENCE NO: " + ref;
-
   summaryBox.innerHTML =
-    `<div><b>AGENCY NAME:</b> ${agency.value.toUpperCase()}</div>
-     <div><b>PIC NAME 1 (MANDATORY):</b> ${pic1.value.toUpperCase()}</div>
-     ${pic2.value ? `<div><b>PIC NAME 2 (OPTIONAL):</b> ${pic2.value.toUpperCase()}</div>` : ""}
+    `<div><b>AGENCY:</b> ${agency.value.toUpperCase()}</div>
+     <div><b>PIC NAME 1:</b> ${pic1.value.toUpperCase()}</div>
+     ${pic2.value ? `<div><b>PIC NAME 2:</b> ${pic2.value.toUpperCase()}</div>` : ""}
      <div><b>CONTACT (MANDATORY):</b> ${contact1.value}</div>
      ${contact2.value ? `<div><b>CONTACT (OPTIONAL):</b> ${contact2.value}</div>` : ""}
-     <div><b>WHATSAPP NO (MANDATORY):</b> ${whatsapp.value}</div>`;
+     <div><b>WHATSAPP NO:</b> ${whatsapp.value}</div>`;
 
   return false;
 }
 
+/* FOOTER */
 (function(){
   const year = new Date().getFullYear();
   trademark.innerHTML =
