@@ -6,51 +6,71 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+:root {
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #000000;
+  --muted: #666;
+  --border: #ccc;
+  --primary: #1e88e5;
+}
+
+body.dark {
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #f1f1f1;
+  --muted: #aaa;
+  --border: #333;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  background: var(--bg);
   padding: 20px;
+  color: var(--text);
 }
+
 .container {
   max-width: 420px;
   margin: auto;
-  background: #ffffff;
+  background: var(--card);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  position: relative;
 }
-h2 {
-  text-align: center;
-  margin-bottom: 10px;
-}
-label {
-  font-weight: bold;
-}
+
+h2 { text-align: center; }
+
+label { font-weight: bold; }
 
 input[type="text"],
 input[type="tel"] {
   width: 100%;
   padding: 10px;
   margin: 5px 0 15px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   border-radius: 5px;
+  background: var(--card);
+  color: var(--text);
   text-transform: uppercase;
 }
 
 ::placeholder {
   text-transform: none;
-  color: #999;
+  color: var(--muted);
 }
 
 .consent {
   font-size: 13px;
   margin-bottom: 15px;
+  color: var(--muted);
 }
 
 button {
   width: 100%;
   padding: 12px;
-  background: #1e88e5;
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 5px;
@@ -83,13 +103,20 @@ button.enabled {
   font-size: 14px;
   margin-top: 15px;
 }
-.summary div {
-  margin-bottom: 6px;
-}
 
-.ref {
+.ref { font-weight: bold; margin-top: 10px; }
+
+/* WATERMARK */
+.watermark {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-size: 48px;
+  color: rgba(0,0,0,0.08);
   font-weight: bold;
-  margin-top: 10px;
+  pointer-events: none;
+  display: none;
 }
 
 /* FOOTER */
@@ -97,38 +124,46 @@ button.enabled {
   margin-top: 30px;
   text-align: center;
   font-size: 11px;
-  color: #888;
+  color: var(--muted);
 }
 .footer a {
-  color: #888;
+  color: var(--muted);
   text-decoration: none;
 }
-.footer a:hover {
-  text-decoration: underline;
-}
-
 .divider {
   height: 2px;
-  background: linear-gradient(to right, transparent, #1e88e5, transparent);
+  background: linear-gradient(to right, transparent, var(--primary), transparent);
   margin-bottom: 10px;
 }
-
 .privacy {
   font-size: 11px;
-  color: #777;
   margin-top: 6px;
+}
+
+/* TOGGLE */
+.toggle {
+  text-align: right;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.toggle input {
+  transform: scale(1.1);
 }
 </style>
 </head>
 
 <body>
 
+<div class="toggle">
+  🌙 Dark Mode
+  <input type="checkbox" id="darkToggle" onchange="toggleDark()">
+</div>
+
 <!-- FORM -->
 <div class="container" id="formBox">
   <h2>📄 AGENCY INFORMATION SUBMISSION</h2>
 
   <form onsubmit="return submitForm();">
-
     <label>Agency Name</label>
     <input type="text" id="agency" placeholder="Example: ABC COLLECTION AGENCY" required>
 
@@ -136,7 +171,7 @@ button.enabled {
     <input type="text" id="pic1" placeholder="Example: AHMAD BIN ALI" required>
 
     <label>PIC Name 2</label>
-    <input type="text" id="pic2" placeholder="Example: SITI BINTI AMINAH">
+    <input type="text" id="pic2">
 
     <label>Contact No</label>
     <input type="tel" id="contact" placeholder="Example: 0123456789" required oninput="formatPhone(this)">
@@ -155,7 +190,8 @@ button.enabled {
 </div>
 
 <!-- SUCCESS -->
-<div class="container" id="successBox" style="display:none;text-align:center;">
+<div class="container" id="successBox" style="display:none;">
+  <div class="watermark" id="watermark">SUBMITTED</div>
 
   <div class="successIcon">
     <svg viewBox="0 0 24 24" fill="none">
@@ -164,13 +200,18 @@ button.enabled {
     </svg>
   </div>
 
-  <h2>Submission Successful</h2>
+  <h2 style="text-align:center;">Submission Successful</h2>
 
   <div class="ref" id="refDisplay"></div>
 
   <div class="summary" id="summaryBox"></div>
 
-  <p style="font-size:13px;color:#555;margin-top:10px;">
+  <div class="consent" style="margin-top:15px;">
+    ✔ The agency has confirmed consent for the use of the submitted information
+    for official communication purposes.
+  </div>
+
+  <p style="font-size:13px;text-align:center;">
     You may safely close this page.
   </p>
 </div>
@@ -188,6 +229,16 @@ button.enabled {
 <script>
 let IS_SUBMITTED = false;
 
+/* DARK MODE */
+function toggleDark() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("dark", document.body.classList.contains("dark"));
+}
+if (localStorage.getItem("dark") === "true") {
+  document.body.classList.add("dark");
+  document.getElementById("darkToggle").checked = true;
+}
+
 /* BUTTON */
 function toggleBtn() {
   const btn = document.getElementById("submitBtn");
@@ -195,7 +246,7 @@ function toggleBtn() {
   btn.classList.toggle("enabled", !btn.disabled);
 }
 
-/* PHONE FORMAT */
+/* PHONE */
 function formatPhone(el) {
   let v = el.value.replace(/\D/g,'');
   if (v.startsWith("0")) v = "6" + v;
@@ -221,7 +272,6 @@ function submitForm() {
   IS_SUBMITTED = true;
 
   const ref = generateRef();
-
   const a = agency.value.toUpperCase();
   const p1 = pic1.value.toUpperCase();
   const p2 = pic2.value.toUpperCase();
@@ -237,30 +287,28 @@ function submitForm() {
   data.append("consent", "YES");
   data.append("ref", ref);
 
-  fetch("PASTE_YOUR_WEB_APP_URL_HERE", {
-    method: "POST",
-    body: data
-  });
+  fetch("PASTE_YOUR_WEB_APP_URL_HERE", { method: "POST", body: data });
 
-  document.getElementById("formBox").style.display = "none";
-  document.getElementById("successBox").style.display = "block";
-  document.getElementById("refDisplay").innerText = "Reference No: " + ref;
+  formBox.style.display = "none";
+  successBox.style.display = "block";
+  document.getElementById("watermark").style.display = "block";
 
-  document.getElementById("summaryBox").innerHTML =
-    "<div><b>Agency:</b> " + a + "</div>" +
-    "<div><b>PIC Name 1:</b> " + p1 + "</div>" +
-    (p2 ? "<div><b>PIC Name 2:</b> " + p2 + "</div>" : "") +
-    "<div><b>Contact No:</b> " + c + "</div>" +
-    "<div><b>WhatsApp No:</b> " + w + "</div>";
+  refDisplay.innerText = "Reference No: " + ref;
+  summaryBox.innerHTML =
+    `<div><b>Agency:</b> ${a}</div>
+     <div><b>PIC Name 1:</b> ${p1}</div>
+     ${p2 ? `<div><b>PIC Name 2:</b> ${p2}</div>` : ""}
+     <div><b>Contact No:</b> ${c}</div>
+     <div><b>WhatsApp No:</b> ${w}</div>`;
 
   return false;
 }
 
-/* FOOTER TEXT */
+/* FOOTER */
 (function () {
   const year = new Date().getFullYear();
   document.getElementById("trademark").innerHTML =
-    '© ' + year + ' <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · For Authorized Agency Use';
+    `© ${year} <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · For Authorized Agency Use`;
 })();
 </script>
 
