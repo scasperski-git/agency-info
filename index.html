@@ -8,23 +8,40 @@
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  background: linear-gradient(135deg,#e3f2fd,#f4f6f8);
   padding: 20px;
 }
 .container {
   max-width: 420px;
   margin: auto;
   background: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 22px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
 }
 h2 {
   text-align: center;
+  margin-bottom: 5px;
 }
-label {
+
+/* LOGO */
+.logo {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.logo span {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 30px;
+  background: #1e88e5;
+  color: #fff;
   font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 14px;
 }
+
+/* FORM */
+label { font-weight: bold; }
 
 input[type="text"],
 input[type="tel"] {
@@ -32,7 +49,7 @@ input[type="tel"] {
   padding: 10px;
   margin: 5px 0 15px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 6px;
   text-transform: uppercase;
 }
 
@@ -47,7 +64,7 @@ button {
   background: #1e88e5;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 16px;
   opacity: 0.6;
   cursor: not-allowed;
@@ -57,11 +74,19 @@ button.enabled {
   cursor: pointer;
 }
 
-.note {
-  font-size: 12px;
-  color: #666;
-  text-align: center;
-  margin-top: 10px;
+/* SUCCESS */
+.successIcon {
+  margin: 15px auto;
+  width: 80px;
+}
+.successIcon svg {
+  width: 100%;
+  animation: pop 0.5s ease;
+}
+@keyframes pop {
+  0% { transform: scale(0.3); opacity:0; }
+  80% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity:1; }
 }
 
 .ref {
@@ -76,6 +101,13 @@ button.enabled {
   color: #999;
   margin-top: 25px;
 }
+.trademark a {
+  color: #999;
+  text-decoration: none;
+}
+.trademark a:hover {
+  text-decoration: underline;
+}
 </style>
 </head>
 
@@ -83,7 +115,12 @@ button.enabled {
 
 <!-- FORM -->
 <div class="container" id="formBox">
-  <h2>📄 Agency Information Form</h2>
+
+  <div class="logo">
+    <span>SCZP AGENCY SYSTEM</span>
+  </div>
+
+  <h2>Agency Information Form</h2>
 
   <form onsubmit="return submitForm();">
 
@@ -97,30 +134,38 @@ button.enabled {
     <input type="text" id="pic2">
 
     <label>Contact No</label>
-    <input type="tel" id="contact" placeholder="60123456789" required>
+    <input type="tel" id="contact" placeholder="6012 345 6789" required oninput="formatPhone(this)">
 
     <label>WhatsApp No</label>
-    <input type="tel" id="whatsapp" placeholder="60123456789" required>
+    <input type="tel" id="whatsapp" placeholder="6012 345 6789" required oninput="formatPhone(this)">
 
     <div class="consent">
       <input type="checkbox" id="consent" onclick="toggleBtn()">
-      I hereby confirm that all information provided is true and accurate.
-      I give consent for this information to be recorded and used for official
-      agency communication and record purposes.
+      I hereby confirm that all information provided is true and accurate and
+      I give consent for this information to be recorded for official use.
     </div>
 
     <button type="submit" id="submitBtn" disabled>Submit</button>
   </form>
-
-  <div class="note">Information will be securely recorded</div>
 </div>
 
 <!-- SUCCESS -->
 <div class="container" id="successBox" style="display:none;text-align:center;">
-  <h2>✅ Submission Successful</h2>
+
+  <div class="successIcon">
+    <svg viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="#1e88e5" stroke-width="2"/>
+      <path d="M7 12l3 3 7-7" stroke="#1e88e5" stroke-width="2" fill="none"/>
+    </svg>
+  </div>
+
+  <h2>Submission Successful</h2>
+
   <div class="ref" id="refDisplay"></div>
-  <p style="font-size:12px;color:#666;">
-    Please keep this reference number for future reference.
+
+  <p style="font-size:13px;color:#555;margin-top:10px;">
+    Your information has been successfully recorded.<br>
+    <b>You may safely close this page.</b>
   </p>
 </div>
 
@@ -130,23 +175,33 @@ button.enabled {
 <script>
 let IS_SUBMITTED = false;
 
-/* BUTTON ENABLE */
+/* BUTTON */
 function toggleBtn() {
   const btn = document.getElementById("submitBtn");
   btn.disabled = !document.getElementById("consent").checked;
   btn.classList.toggle("enabled", !btn.disabled);
 }
 
-/* REF GENERATOR */
+/* PHONE FORMAT */
+function formatPhone(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.startsWith("60")) {
+    el.value = v.replace(/(\d{2})(\d{1,4})(\d{1,4})/, "$1 $2 $3").trim();
+  } else {
+    el.value = v;
+  }
+}
+
+/* REF */
 function generateRef() {
   const d = new Date();
   return "AGY-" +
     d.getFullYear() +
-    String(d.getMonth() + 1).padStart(2, "0") +
-    String(d.getDate()).padStart(2, "0") + "-" +
-    String(d.getHours()).padStart(2, "0") +
-    String(d.getMinutes()).padStart(2, "0") +
-    String(d.getSeconds()).padStart(2, "0");
+    String(d.getMonth()+1).padStart(2,"0") +
+    String(d.getDate()).padStart(2,"0") + "-" +
+    String(d.getHours()).padStart(2,"0") +
+    String(d.getMinutes()).padStart(2,"0") +
+    String(d.getSeconds()).padStart(2,"0");
 }
 
 /* SUBMIT */
@@ -155,19 +210,15 @@ function submitForm() {
   IS_SUBMITTED = true;
 
   const ref = generateRef();
-  const time = new Date().toLocaleString();
 
   const data = new URLSearchParams();
-  data.append("time", time);
   data.append("agency", agency.value.toUpperCase());
   data.append("pic1", pic1.value.toUpperCase());
   data.append("pic2", pic2.value.toUpperCase());
-  data.append("contact", contact.value);
-  data.append("whatsapp", whatsapp.value);
+  data.append("contact", contact.value.replace(/\s/g,''));
+  data.append("whatsapp", whatsapp.value.replace(/\s/g,''));
   data.append("consent", "YES");
   data.append("ref", ref);
-  data.append("ua", navigator.userAgent);
-  data.append("lang", navigator.language);
 
   fetch("PASTE_YOUR_WEB_APP_URL_HERE", {
     method: "POST",
@@ -181,11 +232,11 @@ function submitForm() {
   return false;
 }
 
-/* TRADEMARK AUTO YEAR + DOMAIN */
-(function () {
+/* TRADEMARK */
+(function(){
   const year = new Date().getFullYear();
-  document.getElementById("trademark").innerText =
-    "© " + year + " sczpnet.org · Authorized Access Only";
+  document.getElementById("trademark").innerHTML =
+    '© ' + year + ' <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · Authorized Access Only';
 })();
 </script>
 
