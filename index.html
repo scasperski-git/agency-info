@@ -126,15 +126,28 @@ button:disabled{
 <!-- SUCCESS PAGE -->
 <div class="container hidden" id="successPage">
     <div class="success">
-        ✅<br><br>
-        <b>YOUR INFORMATION HAS BEEN SUCCESSFULLY SENT</b><br>
+
+        <!-- ANIMATED TICK -->
+        <svg class="checkmark" viewBox="0 0 52 52">
+            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark__check" fill="none"
+                  d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+
+        <b>YOUR INFORMATION HAS BEEN<br>SUCCESSFULLY SENT</b><br><br>
         THANK YOU
+
+        <div class="close-note">
+            You may close this page.
+        </div>
     </div>
+
     <div class="footer">
-        © <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> 
+        © <a href="https://sczpnet.org" target="_blank">sczpnet.org</a>
         <span id="year2"></span>
     </div>
 </div>
+
 
 <script>
 // YEAR AUTO
