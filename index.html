@@ -177,9 +177,6 @@ button.enabled {
 <script>
 /* ===== ON / OFF MODE ===== */
 var FORM_ENABLED = true; // true = ON | false = OFF
-  
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxyJM4tnkmLel_f7frshAK89sCzCPIJNPvhkVNoZfKvysWSzARpqk4Hh4XXZuw8vaOS/exec";
-
 </script>
 
 <!-- MAINTENANCE -->
@@ -328,39 +325,14 @@ mandatoryFields.forEach(f =>
   document.getElementById(f.id).addEventListener("input", updateState)
 );
 
-async function submitForm() {
+function submitForm() {
   updateState();
   if (submitBtn.disabled) return false;
 
-  const agencyName = agency.value.toUpperCase().trim();
-  const agencyKey = agencyName.split(" ")[0]; // FIRST WORD
-
-  /* === CHECK EXISTING (GET) === */
-  const checkResp = await fetch(
-    SCRIPT_URL + "?action=check&key=" + encodeURIComponent(agencyKey)
-  );
-  const checkResult = await checkResp.text();
-
-  if (checkResult === "BLOCKED") {
-    alert(
-      "This agency record has already been updated once.\n\nFurther updates are not allowed."
-    );
-    return false;
-  }
-
-  if (checkResult === "EXISTS") {
-    const confirmUpdate = confirm(
-      "This agency already exists.\n\nDo you want to update the record?\n\nUpdate is allowed only once."
-    );
-    if (!confirmUpdate) return false;
-  }
-
-  /* === NORMAL SUBMIT (POST) === */
   const ref = generateRef();
   const data = new URLSearchParams();
-
   data.append("ref", ref);
-  data.append("agency", agencyName);
+  data.append("agency", agency.value.toUpperCase());
   data.append("pic1", pic1.value.toUpperCase());
   data.append("pic2", pic2.value.toUpperCase());
   data.append("contact1", contact1.value);
@@ -368,26 +340,15 @@ async function submitForm() {
   data.append("whatsapp", whatsapp.value);
   data.append("consent", "YES");
 
-  const resp = await fetch(SCRIPT_URL, {
-    method: "POST",
-    body: data
-  });
+  fetch("https://script.google.com/macros/s/AKfycbx8DYT7cJ2tVURhO_ecoYnyEKrhdENH8wg3BHCH0RPJTmS8duYZXynltbDrpq4zx8kY/exec", { method: "POST", body: data });
 
-  const result = await resp.text();
-  if (result === "BLOCKED") {
-    alert("Update not allowed.");
-    return false;
-  }
-
-  /* === SUCCESS UI (ORIGINAL CODE) === */
   formBox.style.display = "none";
   successBox.style.display = "block";
   watermark.style.display = "block";
 
   refDisplay.innerText = "REFERENCE NO: " + ref;
-
   summaryBox.innerHTML =
-    `<div><b>AGENCY:</b> ${agencyName}</div>
+    `<div><b>AGENCY:</b> ${agency.value.toUpperCase()}</div>
      <div><b>PIC NAME 1:</b> ${pic1.value.toUpperCase()}</div>
      ${pic2.value ? `<div><b>PIC NAME 2:</b> ${pic2.value.toUpperCase()}</div>` : ""}
      <div><b>CONTACT (MANDATORY):</b> ${contact1.value}</div>
@@ -396,7 +357,6 @@ async function submitForm() {
 
   return false;
 }
-
 
 /* FOOTER */
 (function(){
