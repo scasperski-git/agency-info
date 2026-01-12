@@ -45,3 +45,54 @@
     font-size:13px;
     color:#666;
 }
+/* FORCE SUCCESS CENTER */
+.success{
+    text-align:center;
+    min-height:200px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+/* CHECKMARK ANIMATION – WORKING VERSION */
+.checkmark{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    display:block;
+    stroke-width:4;
+    stroke:#28a745;
+    stroke-miterlimit:10;
+    margin:0 auto 15px auto;
+    box-shadow: inset 0 0 0 #28a745;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.checkmark circle{
+    stroke-dasharray:166;
+    stroke-dashoffset:166;
+    animation: stroke .6s cubic-bezier(.65,0,.45,1) forwards;
+}
+
+.checkmark path{
+    stroke-dasharray:48;
+    stroke-dashoffset:48;
+    animation: stroke .3s cubic-bezier(.65,0,.45,1) .6s forwards;
+}
+
+@keyframes stroke{
+    100%{stroke-dashoffset:0;}
+}
+@keyframes scale{
+    50%{transform:scale(1.1);}
+}
+@keyframes fill{
+    100%{box-shadow: inset 0 0 0 45px #28a745;}
+}
+
+.close-note{
+    font-size:13px;
+    color:#666;
+    margin-top:10px;
+}
