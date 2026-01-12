@@ -23,23 +23,23 @@ body {
   max-width: 420px;
   margin: auto;
   background: #ffffff;
-  padding: 20px;
+  padding: 16px 20px 20px; /* tajuk naik sikit */
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   position: relative;
 }
 
-/* SUCCESS SIZE (SLIGHTLY BIGGER) */
+/* SUCCESS BOX SLIGHTLY BIGGER */
 .success-container {
   max-width: 520px;
 }
 
+/* ===== TEXT ===== */
 h2 {
   text-align: center;
-  margin-top: 0;        /* naikkan tajuk */
-  margin-bottom: 8px;  /* rapat sikit dengan form */
+  margin-top: 0;
+  margin-bottom: 8px;
 }
-
 
 label {
   font-weight: bold;
@@ -61,7 +61,7 @@ input[type="tel"] {
   color: #999;
 }
 
-/* ===== ERROR STATE ===== */
+/* ===== ERROR ===== */
 input.error {
   border-color: #e53935;
   background: #fff5f5;
@@ -93,13 +93,12 @@ button {
   opacity: 0.6;
   cursor: not-allowed;
 }
-
 button.enabled {
   opacity: 1;
   cursor: pointer;
 }
 
-/* ===== HELPER TEXT ===== */
+/* ===== HELPER ===== */
 .helper {
   font-size: 12px;
   color: #777;
@@ -116,6 +115,20 @@ button.enabled {
   width: 100%;
 }
 
+.ref {
+  font-weight: bold;
+  text-align: center;
+  margin: 6px 0 12px;
+  font-size: 14px;
+}
+
+.summary {
+  font-size: 14px;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+/* WATERMARK */
 .watermark {
   position: absolute;
   top: 45%;
@@ -126,12 +139,6 @@ button.enabled {
   font-weight: bold;
   display: none;
   pointer-events: none;
-}
-
-.summary {
-  font-size: 14px;
-  margin-top: 15px;
-  line-height: 1.6;
 }
 
 /* ===== FOOTER ===== */
@@ -207,6 +214,8 @@ button.enabled {
 
   <h2>Submission Successful</h2>
 
+  <div class="ref" id="refDisplay"></div>
+
   <div class="summary" id="summaryBox"></div>
 
   <div class="consent" style="margin-top:15px;">
@@ -243,6 +252,17 @@ function formatPhone(el) {
   el.value = v;
 }
 
+function generateRef() {
+  const d = new Date();
+  return "AGY-" +
+    d.getFullYear() +
+    String(d.getMonth()+1).padStart(2,"0") +
+    String(d.getDate()).padStart(2,"0") + "-" +
+    String(d.getHours()).padStart(2,"0") +
+    String(d.getMinutes()).padStart(2,"0") +
+    String(d.getSeconds()).padStart(2,"0");
+}
+
 function updateState() {
   let firstError = null;
   let ok = true;
@@ -262,29 +282,24 @@ function updateState() {
     }
   });
 
-  const btn = document.getElementById("submitBtn");
-  const helper = document.getElementById("helperText");
-
   if (!ok) {
-    btn.disabled = true;
-    btn.classList.remove("enabled");
-    helper.innerText = "Please complete all mandatory fields.";
-    if (firstError) {
-      firstError.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+    submitBtn.disabled = true;
+    submitBtn.classList.remove("enabled");
+    helperText.innerText = "Please complete all mandatory fields.";
+    if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
     return;
   }
 
   if (!consent.checked) {
-    btn.disabled = true;
-    btn.classList.remove("enabled");
-    helper.innerText = "Please confirm consent to proceed.";
+    submitBtn.disabled = true;
+    submitBtn.classList.remove("enabled");
+    helperText.innerText = "Please confirm consent to proceed.";
     return;
   }
 
-  btn.disabled = false;
-  btn.classList.add("enabled");
-  helper.innerText = "";
+  submitBtn.disabled = false;
+  submitBtn.classList.add("enabled");
+  helperText.innerText = "";
 }
 
 mandatoryFields.forEach(f => {
@@ -295,9 +310,13 @@ function submitForm() {
   updateState();
   if (submitBtn.disabled) return false;
 
+  const ref = generateRef();
+
   formBox.style.display = "none";
   successBox.style.display = "block";
   watermark.style.display = "block";
+
+  refDisplay.innerText = "Reference No: " + ref;
 
   summaryBox.innerHTML =
     `<div><b>Agency:</b> ${agency.value}</div>
