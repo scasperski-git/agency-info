@@ -10,6 +10,7 @@ html, body {
   height: 100%;
   margin: 0;
 }
+
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(180deg, #eef1f4, #f4f6f8);
@@ -17,6 +18,7 @@ body {
   color: #000;
 }
 
+/* ===== CONTAINER ===== */
 .container {
   max-width: 420px;
   margin: auto;
@@ -25,6 +27,11 @@ body {
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   position: relative;
+}
+
+/* SUCCESS SIZE (SLIGHTLY BIGGER) */
+.success-container {
+  max-width: 520px;
 }
 
 h2 {
@@ -52,7 +59,7 @@ input[type="tel"] {
   color: #999;
 }
 
-/* ERROR */
+/* ===== ERROR STATE ===== */
 input.error {
   border-color: #e53935;
   background: #fff5f5;
@@ -65,14 +72,14 @@ input.error {
   display: none;
 }
 
-/* CONSENT */
+/* ===== CONSENT ===== */
 .consent {
   font-size: 13px;
   margin: 10px 0;
   color: #555;
 }
 
-/* BUTTON */
+/* ===== BUTTON ===== */
 button {
   width: 100%;
   padding: 12px;
@@ -90,7 +97,7 @@ button.enabled {
   cursor: pointer;
 }
 
-/* DISABLE REASON */
+/* ===== HELPER TEXT ===== */
 .helper {
   font-size: 12px;
   color: #777;
@@ -98,7 +105,7 @@ button.enabled {
   text-align: center;
 }
 
-/* SUCCESS */
+/* ===== SUCCESS ===== */
 .successIcon {
   margin: 15px auto;
   width: 70px;
@@ -106,6 +113,7 @@ button.enabled {
 .successIcon svg {
   width: 100%;
 }
+
 .watermark {
   position: absolute;
   top: 45%;
@@ -121,8 +129,10 @@ button.enabled {
 .summary {
   font-size: 14px;
   margin-top: 15px;
+  line-height: 1.6;
 }
 
+/* ===== FOOTER ===== */
 .footer {
   margin-top: 25px;
   text-align: center;
@@ -183,7 +193,7 @@ button.enabled {
 </div>
 
 <!-- SUCCESS -->
-<div class="container" id="successBox" style="display:none;">
+<div class="container success-container" id="successBox" style="display:none;">
   <div class="watermark" id="watermark">SUBMITTED</div>
 
   <div class="successIcon">
@@ -193,10 +203,11 @@ button.enabled {
     </svg>
   </div>
 
-  <h2 style="text-align:center;">Submission Successful</h2>
-  <div id="summaryBox" class="summary"></div>
+  <h2>Submission Successful</h2>
 
-  <div class="consent">
+  <div class="summary" id="summaryBox"></div>
+
+  <div class="consent" style="margin-top:15px;">
     ✔ Consent confirmed for official communication purposes.
   </div>
 
@@ -249,14 +260,16 @@ function updateState() {
     }
   });
 
-  const helper = document.getElementById("helperText");
   const btn = document.getElementById("submitBtn");
+  const helper = document.getElementById("helperText");
 
   if (!ok) {
     btn.disabled = true;
     btn.classList.remove("enabled");
     helper.innerText = "Please complete all mandatory fields.";
-    if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (firstError) {
+      firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
     return;
   }
 
