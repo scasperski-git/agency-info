@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-/* ===== LAYOUT FIX (FOOTER FIT) ===== */
+/* ===== LAYOUT FIX ===== */
 html, body {
   height: 100%;
   margin: 0;
@@ -136,11 +136,13 @@ button.enabled {
   display: none;
 }
 
-/* ===== DARK MODE TOGGLE ===== */
-.toggle {
+/* ===== DARK MODE TOGGLE (ALIGNED) ===== */
+.topbar {
+  max-width: 420px;
+  margin: auto;
   text-align: right;
   font-size: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 /* ===== FOOTER ===== */
@@ -150,17 +152,14 @@ button.enabled {
   color: var(--muted);
   margin-top: 20px;
 }
-.footer a {
-  color: var(--muted);
-  text-decoration: none;
-}
-.footer a:hover {
-  text-decoration: underline;
-}
 .divider {
   height: 2px;
   background: linear-gradient(to right, transparent, var(--primary), transparent);
   margin-bottom: 10px;
+}
+.footer a {
+  color: var(--muted);
+  text-decoration: none;
 }
 .privacy {
   font-size: 11px;
@@ -172,8 +171,7 @@ button.enabled {
 <body>
 <div class="page">
 
-<!-- DARK MODE -->
-<div class="toggle">
+<div class="topbar">
   🌙 Dark Mode
   <input type="checkbox" id="darkToggle" onchange="toggleDark()">
 </div>
@@ -182,7 +180,7 @@ button.enabled {
 
 <!-- FORM -->
 <div class="container" id="formBox">
-  <h2>📄AGENCY INFORMATION SUBMISSION</h2>
+  <h2>📄 AGENCY INFORMATION SUBMISSION</h2>
 
   <form onsubmit="return submitForm();">
 
@@ -192,16 +190,16 @@ button.enabled {
     <label>PIC Name 1</label>
     <input type="text" id="pic1" placeholder="Example: MR JOHN DOE" required>
 
-    <label>PIC Name 2(Optional)</label>
-    <input type="text" id="pic2" placeholder="Example: MISS JANE DOE " required>
+    <label>PIC Name 2 (Optional)</label>
+    <input type="text" id="pic2" placeholder="Example: MISS JANE DOE">
 
-    <label>Contact No</label>
-    <input type="tel" id="contact" placeholder="Example: 0123456789" required oninput="formatPhone(this)">
+    <label>Contact No (Primary)</label>
+    <input type="tel" id="contact1" placeholder="Example: 0123456789" required oninput="formatPhone(this)">
 
-    <label>Contact No(Optional)</label>
-    <input type="tel" id="contact" placeholder="Example: 0123456789" required oninput="formatPhone(this)">
+    <label>Contact No (Optional)</label>
+    <input type="tel" id="contact2" placeholder="Example: 0123456789" oninput="formatPhone(this)">
 
-    <label>WhatsApp No(Mandatory)</label>
+    <label>WhatsApp No (Mandatory)</label>
     <input type="tel" id="whatsapp" placeholder="Example: 0123456789" required oninput="formatPhone(this)">
 
     <div class="consent">
@@ -232,8 +230,7 @@ button.enabled {
   <div class="summary" id="summaryBox"></div>
 
   <div class="consent" style="margin-top:15px;">
-    ✔ The agency has confirmed consent for the use of the submitted information
-    for official communication purposes.
+    ✔ The agency has confirmed consent for official communication purposes.
   </div>
 
   <p style="font-size:13px;text-align:center;">
@@ -265,7 +262,7 @@ function toggleDark() {
 }
 if (localStorage.getItem("dark") === "true") {
   document.body.classList.add("dark");
-  document.getElementById("darkToggle").checked = true;
+  darkToggle.checked = true;
 }
 
 /* BUTTON */
@@ -303,19 +300,18 @@ function submitForm() {
   const a = agency.value.toUpperCase();
   const p1 = pic1.value.toUpperCase();
   const p2 = pic2.value.toUpperCase();
-  const c = contact.value;
+  const c1 = contact1.value;
+  const c2 = contact2.value;
   const w = whatsapp.value;
 
-  const data = new URLSearchParams();
-  data.append("agency", a);
-  data.append("pic1", p1);
-  data.append("pic2", p2);
-  data.append("contact", c);
-  data.append("whatsapp", w);
-  data.append("consent", "YES");
-  data.append("ref", ref);
-
-  fetch("PASTE_YOUR_WEB_APP_URL_HERE", { method: "POST", body: data });
+  fetch("PASTE_YOUR_WEB_APP_URL_HERE", {
+    method: "POST",
+    body: new URLSearchParams({
+      agency: a, pic1: p1, pic2: p2,
+      contact1: c1, contact2: c2,
+      whatsapp: w, consent: "YES", ref: ref
+    })
+  });
 
   formBox.style.display = "none";
   successBox.style.display = "block";
@@ -326,16 +322,17 @@ function submitForm() {
     `<div><b>Agency:</b> ${a}</div>
      <div><b>PIC Name 1:</b> ${p1}</div>
      ${p2 ? `<div><b>PIC Name 2:</b> ${p2}</div>` : ""}
-     <div><b>Contact No:</b> ${c}</div>
+     <div><b>Contact (Primary):</b> ${c1}</div>
+     ${c2 ? `<div><b>Contact (Optional):</b> ${c2}</div>` : ""}
      <div><b>WhatsApp No:</b> ${w}</div>`;
 
   return false;
 }
 
-/* FOOTER TEXT */
+/* FOOTER */
 (function () {
   const year = new Date().getFullYear();
-  document.getElementById("trademark").innerHTML =
+  trademark.innerHTML =
     `© ${year} <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · For Authorized Agency Use`;
 })();
 </script>
