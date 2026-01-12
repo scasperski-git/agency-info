@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-/* ===== LAYOUT FIX ===== */
 html, body {
   height: 100%;
   margin: 0;
@@ -20,7 +19,6 @@ html, body {
   flex: 1;
 }
 
-/* ===== THEME ===== */
 :root {
   --bg: #f4f6f8;
   --card: #ffffff;
@@ -44,7 +42,6 @@ body {
   color: var(--text);
 }
 
-/* ===== CARD ===== */
 .container {
   max-width: 420px;
   margin: auto;
@@ -81,7 +78,6 @@ input[type="tel"] {
   color: var(--muted);
 }
 
-/* ===== BUTTON ===== */
 button {
   width: 100%;
   padding: 12px;
@@ -98,7 +94,7 @@ button.enabled {
   opacity: 1;
 }
 
-/* ===== SUCCESS ===== */
+/* SUCCESS */
 .successIcon {
   margin: 15px auto;
   width: 70px;
@@ -118,12 +114,9 @@ button.enabled {
   font-size: 14px;
   margin-top: 15px;
 }
-.ref {
-  font-weight: bold;
-  margin-top: 10px;
-}
+.ref { font-weight: bold; margin-top: 10px; }
 
-/* ===== WATERMARK ===== */
+/* WATERMARK */
 .watermark {
   position: absolute;
   top: 45%;
@@ -136,16 +129,15 @@ button.enabled {
   display: none;
 }
 
-/* ===== DARK MODE TOGGLE (ALIGNED) ===== */
-.topbar {
+/* DARK MODE – BELOW FORM */
+.darkbar {
   max-width: 420px;
-  margin: auto;
+  margin: 8px auto 0;
   text-align: right;
   font-size: 12px;
-  margin-bottom: 6px;
 }
 
-/* ===== FOOTER ===== */
+/* FOOTER */
 .footer {
   text-align: center;
   font-size: 11px;
@@ -170,46 +162,60 @@ button.enabled {
 
 <body>
 <div class="page">
-
-<div class="topbar">
-  🌙 Dark Mode
-  <input type="checkbox" id="darkToggle" onchange="toggleDark()">
-</div>
-
 <div class="main">
 
 <!-- FORM -->
 <div class="container" id="formBox">
   <h2>📄 AGENCY INFORMATION SUBMISSION</h2>
 
-  <form onsubmit="return submitForm();">
+  <form oninput="checkMandatory()" onsubmit="return submitForm();">
 
-    <label>Agency Name</label>
-    <input type="text" id="agency" placeholder="Example: ABC DEBT SDN BHD" required>
+<label>Agency Name (Mandatory)</label>
+<input type="text" id="agency"
+  placeholder="Example: ABC DEBT SDN BHD"
+  required>
 
-    <label>PIC Name 1</label>
-    <input type="text" id="pic1" placeholder="Example: MR JOHN DOE" required>
+<label>PIC Name 1 (Mandatory)</label>
+<input type="text" id="pic1"
+  placeholder="Example: MR JOHN DOE"
+  required>
 
-    <label>PIC Name 2 (Optional)</label>
-    <input type="text" id="pic2" placeholder="Example: MISS JANE DOE">
+<label>PIC Name 2 (Optional)</label>
+<input type="text" id="pic2"
+  placeholder="Example: MISS JANE DOE">
 
-    <label>Contact No (Primary)</label>
-    <input type="tel" id="contact1" placeholder="Example: 0123456789" required oninput="formatPhone(this)">
+<label>Contact No (Mandatory)</label>
+<input type="tel" id="contact1"
+  placeholder="Example: 0123456789"
+  required
+  oninput="formatPhone(this)">
 
-    <label>Contact No (Optional)</label>
-    <input type="tel" id="contact2" placeholder="Example: 0123456789" oninput="formatPhone(this)">
+<label>Contact No (Optional)</label>
+<input type="tel" id="contact2"
+  placeholder="Example: 0123456789"
+  oninput="formatPhone(this)">
 
-    <label>WhatsApp No (Mandatory)</label>
-    <input type="tel" id="whatsapp" placeholder="Example: 0123456789" required oninput="formatPhone(this)">
+<label>WhatsApp No (Mandatory)</label>
+<input type="tel" id="whatsapp"
+  placeholder="Example: 0123456789"
+  required
+  oninput="formatPhone(this)">
+
 
     <div class="consent">
-      <input type="checkbox" id="consent" onclick="toggleBtn()">
+      <input type="checkbox" id="consent" disabled>
       I confirm that the information provided is accurate and consent to its use
       for official communication purposes.
     </div>
 
     <button type="submit" id="submitBtn" disabled>Submit</button>
   </form>
+</div>
+
+<!-- DARK MODE (BELOW BOX, RIGHT) -->
+<div class="darkbar">
+  🌙 Dark Mode
+  <input type="checkbox" id="darkToggle" onchange="toggleDark()">
 </div>
 
 <!-- SUCCESS -->
@@ -224,16 +230,14 @@ button.enabled {
   </div>
 
   <h2 style="text-align:center;">Submission Successful</h2>
-
   <div class="ref" id="refDisplay"></div>
-
   <div class="summary" id="summaryBox"></div>
 
   <div class="consent" style="margin-top:15px;">
-    ✔ The agency has confirmed consent for official communication purposes.
+    ✔ Consent confirmed for official communication purposes.
   </div>
 
-  <p style="font-size:13px;text-align:center;">
+  <p style="text-align:center;font-size:13px;">
     You may safely close this page.
   </p>
 </div>
@@ -249,12 +253,9 @@ button.enabled {
     administrative record purposes.
   </div>
 </div>
-
 </div>
 
 <script>
-let IS_SUBMITTED = false;
-
 /* DARK MODE */
 function toggleDark() {
   document.body.classList.toggle("dark");
@@ -265,18 +266,25 @@ if (localStorage.getItem("dark") === "true") {
   darkToggle.checked = true;
 }
 
-/* BUTTON */
-function toggleBtn() {
-  submitBtn.disabled = !consent.checked;
-  submitBtn.classList.toggle("enabled", !submitBtn.disabled);
-}
-
 /* PHONE */
 function formatPhone(el) {
   let v = el.value.replace(/\D/g,'');
   if (v.startsWith("0")) v = "6" + v;
   if (!v.startsWith("6")) v = "6" + v;
   el.value = v;
+}
+
+/* MANDATORY CHECK */
+function checkMandatory() {
+  const ok =
+    agency.value &&
+    pic1.value &&
+    contact1.value &&
+    whatsapp.value;
+
+  consent.disabled = !ok;
+  submitBtn.disabled = !ok || !consent.checked;
+  submitBtn.classList.toggle("enabled", ok && consent.checked);
 }
 
 /* REF */
@@ -293,25 +301,7 @@ function generateRef() {
 
 /* SUBMIT */
 function submitForm() {
-  if (IS_SUBMITTED) return false;
-  IS_SUBMITTED = true;
-
   const ref = generateRef();
-  const a = agency.value.toUpperCase();
-  const p1 = pic1.value.toUpperCase();
-  const p2 = pic2.value.toUpperCase();
-  const c1 = contact1.value;
-  const c2 = contact2.value;
-  const w = whatsapp.value;
-
-  fetch("PASTE_YOUR_WEB_APP_URL_HERE", {
-    method: "POST",
-    body: new URLSearchParams({
-      agency: a, pic1: p1, pic2: p2,
-      contact1: c1, contact2: c2,
-      whatsapp: w, consent: "YES", ref: ref
-    })
-  });
 
   formBox.style.display = "none";
   successBox.style.display = "block";
@@ -319,12 +309,12 @@ function submitForm() {
 
   refDisplay.innerText = "Reference No: " + ref;
   summaryBox.innerHTML =
-    `<div><b>Agency:</b> ${a}</div>
-     <div><b>PIC Name 1:</b> ${p1}</div>
-     ${p2 ? `<div><b>PIC Name 2:</b> ${p2}</div>` : ""}
-     <div><b>Contact (Primary):</b> ${c1}</div>
-     ${c2 ? `<div><b>Contact (Optional):</b> ${c2}</div>` : ""}
-     <div><b>WhatsApp No:</b> ${w}</div>`;
+    `<div><b>Agency:</b> ${agency.value}</div>
+     <div><b>PIC Name 1:</b> ${pic1.value}</div>
+     ${pic2.value ? `<div><b>PIC Name 2:</b> ${pic2.value}</div>` : ""}
+     <div><b>Contact (Mandatory):</b> ${contact1.value}</div>
+     ${contact2.value ? `<div><b>Contact (Optional):</b> ${contact2.value}</div>` : ""}
+     <div><b>WhatsApp No:</b> ${whatsapp.value}</div>`;
 
   return false;
 }
