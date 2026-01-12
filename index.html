@@ -182,7 +182,7 @@ button.enabled {
 
 <!-- FORM -->
 <div class="container" id="formBox">
-  <h2>📄 AGENCY INFORMATION SUBMISSION</h2>
+  <h2>📄AGENCY INFORMATION SUBMISSION</h2>
 
   <form onsubmit="return submitForm();">
 
@@ -192,13 +192,16 @@ button.enabled {
     <label>PIC Name 1</label>
     <input type="text" id="pic1" placeholder="Example: MR JOHN DOE" required>
 
-    <label>PIC Name 2</label>
+    <label>PIC Name 2(Optional)</label>
     <input type="text" id="pic2" placeholder="Example: MISS JANE DOE " required>
 
     <label>Contact No</label>
     <input type="tel" id="contact" placeholder="Example: 0123456789" required oninput="formatPhone(this)">
 
-    <label>WhatsApp No</label>
+    <label>Contact No(Optional)</label>
+    <input type="tel" id="contact" placeholder="Example: 0123456789" required oninput="formatPhone(this)">
+
+    <label>WhatsApp No(Mandatory)</label>
     <input type="tel" id="whatsapp" placeholder="Example: 0123456789" required oninput="formatPhone(this)">
 
     <div class="consent">
