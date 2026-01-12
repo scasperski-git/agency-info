@@ -8,58 +8,97 @@
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(180deg, #eef1f4, #f4f6f8);
+  background: linear-gradient(180deg,#eef1f4,#f4f6f8);
   padding: 20px;
 }
+
+/* CARD */
 .container {
   max-width: 420px;
   margin: auto;
   background: #fff;
-  padding: 20px;
+  padding: 18px 20px 20px; /* atas dikecilkan */
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  position: relative;
 }
-h2 { text-align:center; margin-bottom:5px; }
-.subnote {
-  text-align:center;
-  font-size:12px;
-  color:#666;
-  margin-bottom:10px;
+
+/* TITLE */
+h2 {
+  text-align: center;
+  margin: 0 0 8px; /* naik ke atas */
 }
-label { font-weight:bold; }
+
+/* FORM */
+label { font-weight: bold; }
 input[type="text"], input[type="tel"] {
-  width:100%; padding:10px; margin:5px 0 10px;
-  border:1px solid #ccc; border-radius:5px;
-  text-transform:uppercase;
+  width:100%;
+  padding:10px;
+  margin:5px 0 10px;
+  border:1px solid #ccc;
+  border-radius:5px;
+  text-transform: uppercase;
 }
 ::placeholder { text-transform:none; color:#999; }
 
-.consent { font-size:13px; color:#555; margin-top:10px; }
+.consent {
+  font-size:13px;
+  color:#555;
+  margin:10px 0;
+}
 
 button {
-  width:100%; padding:12px;
-  background:#1e88e5; color:#fff;
-  border:none; border-radius:5px;
+  width:100%;
+  padding:12px;
+  background:#1e88e5;
+  color:#fff;
+  border:none;
+  border-radius:5px;
   font-size:16px;
-  opacity:.6; cursor:not-allowed;
+  opacity:.6;
+  cursor:not-allowed;
 }
-button.enabled { opacity:1; cursor:pointer; }
+button.enabled {
+  opacity:1;
+  cursor:pointer;
+}
 
-.helper { font-size:12px; color:#777; text-align:center; margin-top:5px; }
+.helper {
+  font-size:12px;
+  color:#777;
+  text-align:center;
+  margin-top:6px;
+}
 
+/* FOOTER */
+.footer {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 11px;
+  color: #888;
+}
+.divider {
+  height: 2px;
+  background: linear-gradient(to right, transparent, #1e88e5, transparent);
+  margin-bottom: 10px;
+}
+.footer a {
+  color:#888;
+  text-decoration:none;
+}
 </style>
 </head>
 
 <body>
 
+<!-- FORM -->
 <div class="container" id="formBox">
-  <h2 id="formTitle">📄 AGENCY INFORMATION SUBMISSION</h2>
-  <div class="subnote" id="formNote"></div>
+  <h2>📄 AGENCY INFORMATION SUBMISSION</h2>
 
-  <form onsubmit="return submitForm();">
+  <form oninput="updateState()" onsubmit="return submitForm();">
 
     <label>Agency Name (Mandatory)</label>
-    <input type="text" id="agency" placeholder="Example: ABC DEBT SDN BHD" onblur="checkDuplicate()">
+    <input type="text" id="agency" placeholder="Example: ABC DEBT SDN BHD">
 
     <label>PIC Name 1 (Mandatory)</label>
     <input type="text" id="pic1" placeholder="Example: MR JOHN DOE">
@@ -77,7 +116,7 @@ button.enabled { opacity:1; cursor:pointer; }
     <input type="tel" id="whatsapp" placeholder="Example: 0123456789" oninput="formatPhone(this)">
 
     <div class="consent">
-      <input type="checkbox" id="consent" onclick="updateState()">
+      <input type="checkbox" id="consent">
       I confirm that the information provided is accurate and consent to its use
       for official communication purposes.
     </div>
@@ -87,53 +126,32 @@ button.enabled { opacity:1; cursor:pointer; }
   </form>
 </div>
 
-<script>
-let UPDATE_MODE = false;
-let UPDATE_USED = false;
+<!-- FOOTER -->
+<div class="footer">
+  <div class="divider"></div>
+  <div id="trademark"></div>
+  <div>
+    Information submitted is collected solely for communication and
+    administrative record purposes.
+  </div>
+</div>
 
-/* PHONE */
-function formatPhone(el){
+<script>
+/* PHONE FORMAT */
+function formatPhone(el) {
   let v = el.value.replace(/\D/g,'');
   if (v.startsWith("0")) v = "6"+v;
   if (!v.startsWith("6")) v = "6"+v;
   el.value = v;
 }
 
-/* DUPLICATE DETECT (FIRST WORD) */
-function checkDuplicate(){
-  if (UPDATE_USED) return;
-
-  const name = agency.value.trim();
-  if (!name) return;
-
-  const key = name.split(" ")[0].toUpperCase();
-  const lastKey = localStorage.getItem("LAST_AGENCY_KEY");
-
-  if (lastKey && lastKey === key) {
-    const ok = confirm(
-      "Possible duplicate detected.\n\n" +
-      "A previous submission with a similar agency name was detected.\n\n" +
-      "Do you want to UPDATE the previous information?"
-    );
-
-    if (ok) enableUpdateMode();
-  }
-
-  localStorage.setItem("LAST_AGENCY_KEY", key);
-}
-
-/* UPDATE MODE */
-function enableUpdateMode(){
-  UPDATE_MODE = true;
-  formTitle.innerText = "✏️ AGENCY INFORMATION UPDATE";
-  formNote.innerText =
-    "You are updating previously submitted information. This action is allowed once only.";
-}
-
 /* STATE */
-function updateState(){
+function updateState() {
   const ok =
-    agency.value && pic1.value && contact1.value && whatsapp.value;
+    agency.value &&
+    pic1.value &&
+    contact1.value &&
+    whatsapp.value;
 
   submitBtn.disabled = !ok || !consent.checked;
   submitBtn.classList.toggle("enabled", ok && consent.checked);
@@ -145,21 +163,37 @@ function updateState(){
       : "";
 }
 
-/* SUBMIT */
-function submitForm(){
+/* SUBMIT → GOOGLE SHEET */
+function submitForm() {
   updateState();
   if (submitBtn.disabled) return false;
 
-  if (UPDATE_MODE) UPDATE_USED = true;
+  const payload = new URLSearchParams({
+    agency: agency.value,
+    pic1: pic1.value,
+    pic2: pic2.value,
+    contact1: contact1.value,
+    contact2: contact2.value,
+    whatsapp: whatsapp.value,
+    consent: "YES",
+    mode: "NEW"
+  });
 
-  alert(
-    UPDATE_MODE
-      ? "Information updated successfully."
-      : "Information submitted successfully."
-  );
+  fetch("PASTE_WEB_APP_URL_HERE", {
+    method: "POST",
+    body: payload
+  });
 
+  alert("Submission sent to Google Sheet.");
   return false;
 }
+
+/* FOOTER YEAR */
+(function(){
+  const year = new Date().getFullYear();
+  trademark.innerHTML =
+    `© ${year} <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · For Authorized Agency Use`;
+})();
 </script>
 
 </body>
