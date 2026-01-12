@@ -1,141 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Agency Information Form</title>
-
-<style>
-body{
-    font-family: Arial, sans-serif;
-    background:#f4f6f8;
-}
-.container{
-    max-width:500px;
-    margin:40px auto;
-    background:#fff;
-    padding:25px;
-    border-radius:8px;
-    box-shadow:0 0 10px rgba(0,0,0,.1);
-}
-h2{text-align:center;}
-label{font-weight:bold;}
-input,button{
-    width:100%;
-    padding:10px;
-    margin-top:6px;
-    margin-bottom:15px;
-}
-button{
-    background:#007bff;
-    color:#fff;
-    border:none;
-    cursor:pointer;
-}
-button:hover{background:#0056b3;}
-.consent{
-    font-size:13px;
-    background:#f1f1f1;
-    padding:10px;
-    border-radius:5px;
-}
-.footer{
-    text-align:center;
-    margin-top:20px;
-    font-size:12px;
-    color:#666;
-}
-.footer a{
-    color:#666;
-    text-decoration:none;
-}
-.footer a:hover{
-    text-decoration:underline;
-}
-.hidden{display:none;}
-.success{
-    text-align:center;
-    font-size:16px;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Agency Information Consent Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            margin-bottom: 15px;
+        }
+        .consent {
+            font-size: 13px;
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- PAGE 1 : FORM -->
-<div class="container" id="formPage">
-    <h2>Agency Consent Form</h2>
+<div class="container">
+    <h2>Agency Information Form</h2>
 
     <label>Agency Name</label>
-    <input id="agency" required>
+    <input type="text" id="agency" required>
 
     <label>PIC Name 1</label>
-    <input id="pic1" required>
+    <input type="text" id="pic1" required>
 
     <label>PIC Name 2</label>
-    <input id="pic2">
+    <input type="text" id="pic2">
 
     <label>Contact No</label>
-    <input id="contact" required>
+    <input type="text" id="contact" required>
 
     <label>WhatsApp No</label>
-    <input id="whatsapp" required>
+    <input type="text" id="whatsapp" required>
 
     <div class="consent">
         <b>Consent Information</b><br><br>
-        By submitting this form, you confirm that all information provided is accurate and voluntarily given.
-        You consent to the collection, storage, and usage of this information for official communication
-        and record-keeping purposes in accordance with applicable data protection laws.
+        By submitting this form, you hereby confirm that all information provided is true, accurate, 
+        and voluntarily given. You consent to the collection, storage, and use of your information 
+        for official communication and record purposes in accordance with applicable data protection laws.
     </div>
 
     <button onclick="sendData()">Send</button>
-
-    <div class="footer">
-        © <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> 
-        <span id="year"></span>
-    </div>
-</div>
-
-<!-- PAGE 2 : SUCCESS -->
-<div class="container hidden" id="successPage">
-    <div class="success">
-        ✅<br><br>
-        <b>Your information has been successfully sent.</b><br>
-        Thank you.
-    </div>
-
-    <div class="footer">
-        © <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> 
-        <span id="year2"></span>
-    </div>
 </div>
 
 <script>
-// AUTO YEAR
-const y = new Date().getFullYear();
-document.getElementById("year").innerText = y;
-document.getElementById("year2").innerText = y;
-
-// SEND DATA
-function sendData(){
+function sendData() {
     const data = {
-        agency: agency.value,
-        pic1: pic1.value,
-        pic2: pic2.value,
-        contact: contact.value,
-        whatsapp: whatsapp.value
+        agency: document.getElementById("agency").value,
+        pic1: document.getElementById("pic1").value,
+        pic2: document.getElementById("pic2").value,
+        contact: document.getElementById("contact").value,
+        whatsapp: document.getElementById("whatsapp").value
     };
 
-    fetch("YOUR_WEB_APP_URL_HERE",{
-        method:"POST",
-        body:JSON.stringify(data)
+    fetch("YOUR_WEB_APP_URL_HERE", {
+        method: "POST",
+        body: JSON.stringify(data)
     })
-    .then(res => res.text())
-    .then(() => {
-        document.getElementById("formPage").classList.add("hidden");
-        document.getElementById("successPage").classList.remove("hidden");
+    .then(response => response.text())
+    .then(result => {
+        alert("Your information has been successfully sent. Thank you.");
+        document.querySelector("form")?.reset();
     })
-    .catch(()=>{
-        alert("Submission failed. Please try again.");
+    .catch(error => {
+        alert("Error submitting data.");
+        console.error(error);
     });
 }
 </script>
