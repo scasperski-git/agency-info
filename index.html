@@ -6,180 +6,75 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(180deg, #eef1f4, #f4f6f8);
   padding: 20px;
-  color: #000;
 }
-
-/* ===== CONTAINER ===== */
 .container {
   max-width: 420px;
   margin: auto;
-  background: #ffffff;
+  background: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  position: relative;
 }
-
-/* SUCCESS SIZE (SLIGHTLY BIGGER) */
-.success-container {
-  max-width: 520px;
+h2 { text-align:center; margin-bottom:5px; }
+.subnote {
+  text-align:center;
+  font-size:12px;
+  color:#666;
+  margin-bottom:10px;
 }
-
-h2 {
-  text-align: center;
-  margin-bottom: 10px;
+label { font-weight:bold; }
+input[type="text"], input[type="tel"] {
+  width:100%; padding:10px; margin:5px 0 10px;
+  border:1px solid #ccc; border-radius:5px;
+  text-transform:uppercase;
 }
+::placeholder { text-transform:none; color:#999; }
 
-label {
-  font-weight: bold;
-}
+.consent { font-size:13px; color:#555; margin-top:10px; }
 
-input[type="text"],
-input[type="tel"] {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0 4px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  text-transform: uppercase;
-  box-sizing: border-box;
-}
-
-::placeholder {
-  text-transform: none;
-  color: #999;
-}
-
-/* ===== ERROR STATE ===== */
-input.error {
-  border-color: #e53935;
-  background: #fff5f5;
-}
-
-.errorText {
-  font-size: 12px;
-  color: #e53935;
-  margin-bottom: 8px;
-  display: none;
-}
-
-/* ===== CONSENT ===== */
-.consent {
-  font-size: 13px;
-  margin: 10px 0;
-  color: #555;
-}
-
-/* ===== BUTTON ===== */
 button {
-  width: 100%;
-  padding: 12px;
-  background: #1e88e5;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  opacity: 0.6;
-  cursor: not-allowed;
+  width:100%; padding:12px;
+  background:#1e88e5; color:#fff;
+  border:none; border-radius:5px;
+  font-size:16px;
+  opacity:.6; cursor:not-allowed;
 }
+button.enabled { opacity:1; cursor:pointer; }
 
-button.enabled {
-  opacity: 1;
-  cursor: pointer;
-}
+.helper { font-size:12px; color:#777; text-align:center; margin-top:5px; }
 
-/* ===== HELPER TEXT ===== */
-.helper {
-  font-size: 12px;
-  color: #777;
-  margin-top: 6px;
-  text-align: center;
-}
-
-/* ===== SUCCESS ===== */
-.successIcon {
-  margin: 15px auto;
-  width: 70px;
-}
-.successIcon svg {
-  width: 100%;
-}
-
-.watermark {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-25deg);
-  font-size: 48px;
-  color: rgba(0,0,0,0.06);
-  font-weight: bold;
-  display: none;
-  pointer-events: none;
-}
-
-.summary {
-  font-size: 14px;
-  margin-top: 15px;
-  line-height: 1.6;
-}
-
-/* ===== FOOTER ===== */
-.footer {
-  margin-top: 25px;
-  text-align: center;
-  font-size: 11px;
-  color: #888;
-}
-.divider {
-  height: 2px;
-  background: linear-gradient(to right, transparent, #1e88e5, transparent);
-  margin-bottom: 10px;
-}
-.footer a {
-  color: #888;
-  text-decoration: none;
-}
 </style>
 </head>
 
 <body>
 
-<!-- FORM -->
 <div class="container" id="formBox">
-  <h2>📄 AGENCY INFORMATION SUBMISSION</h2>
+  <h2 id="formTitle">📄 AGENCY INFORMATION SUBMISSION</h2>
+  <div class="subnote" id="formNote"></div>
 
   <form onsubmit="return submitForm();">
 
     <label>Agency Name (Mandatory)</label>
-    <input type="text" id="agency" placeholder="Example: ABC DEBT SDN BHD">
-    <div class="errorText" id="err_agency">This field is required</div>
+    <input type="text" id="agency" placeholder="Example: ABC DEBT SDN BHD" onblur="checkDuplicate()">
 
     <label>PIC Name 1 (Mandatory)</label>
     <input type="text" id="pic1" placeholder="Example: MR JOHN DOE">
-    <div class="errorText" id="err_pic1">This field is required</div>
 
     <label>PIC Name 2 (Optional)</label>
     <input type="text" id="pic2" placeholder="Example: MISS JANE DOE">
 
     <label>Contact No (Mandatory)</label>
     <input type="tel" id="contact1" placeholder="Example: 0123456789" oninput="formatPhone(this)">
-    <div class="errorText" id="err_contact1">This field is required</div>
 
     <label>Contact No (Optional)</label>
     <input type="tel" id="contact2" placeholder="Example: 0123456789" oninput="formatPhone(this)">
 
     <label>WhatsApp No (Mandatory)</label>
     <input type="tel" id="whatsapp" placeholder="Example: 0123456789" oninput="formatPhone(this)">
-    <div class="errorText" id="err_whatsapp">This field is required</div>
 
     <div class="consent">
       <input type="checkbox" id="consent" onclick="updateState()">
@@ -192,127 +87,79 @@ button.enabled {
   </form>
 </div>
 
-<!-- SUCCESS -->
-<div class="container success-container" id="successBox" style="display:none;">
-  <div class="watermark" id="watermark">SUBMITTED</div>
-
-  <div class="successIcon">
-    <svg viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10" stroke="#1e88e5" stroke-width="2"/>
-      <path d="M7 12l3 3 7-7" stroke="#1e88e5" stroke-width="2"/>
-    </svg>
-  </div>
-
-  <h2>Submission Successful</h2>
-
-  <div class="summary" id="summaryBox"></div>
-
-  <div class="consent" style="margin-top:15px;">
-    ✔ Consent confirmed for official communication purposes.
-  </div>
-
-  <p style="text-align:center;font-size:13px;">
-    You may safely close this page.
-  </p>
-</div>
-
-<!-- FOOTER -->
-<div class="footer">
-  <div class="divider"></div>
-  <div id="trademark"></div>
-  <div>
-    Information submitted is collected solely for communication and
-    administrative record purposes.
-  </div>
-</div>
-
 <script>
-const mandatoryFields = [
-  { id: "agency", err: "err_agency" },
-  { id: "pic1", err: "err_pic1" },
-  { id: "contact1", err: "err_contact1" },
-  { id: "whatsapp", err: "err_whatsapp" }
-];
+let UPDATE_MODE = false;
+let UPDATE_USED = false;
 
-function formatPhone(el) {
+/* PHONE */
+function formatPhone(el){
   let v = el.value.replace(/\D/g,'');
-  if (v.startsWith("0")) v = "6" + v;
-  if (!v.startsWith("6")) v = "6" + v;
+  if (v.startsWith("0")) v = "6"+v;
+  if (!v.startsWith("6")) v = "6"+v;
   el.value = v;
 }
 
-function updateState() {
-  let firstError = null;
-  let ok = true;
+/* DUPLICATE DETECT (FIRST WORD) */
+function checkDuplicate(){
+  if (UPDATE_USED) return;
 
-  mandatoryFields.forEach(f => {
-    const input = document.getElementById(f.id);
-    const err = document.getElementById(f.err);
+  const name = agency.value.trim();
+  if (!name) return;
 
-    if (!input.value.trim()) {
-      ok = false;
-      input.classList.add("error");
-      err.style.display = "block";
-      if (!firstError) firstError = input;
-    } else {
-      input.classList.remove("error");
-      err.style.display = "none";
-    }
-  });
+  const key = name.split(" ")[0].toUpperCase();
+  const lastKey = localStorage.getItem("LAST_AGENCY_KEY");
 
-  const btn = document.getElementById("submitBtn");
-  const helper = document.getElementById("helperText");
+  if (lastKey && lastKey === key) {
+    const ok = confirm(
+      "Possible duplicate detected.\n\n" +
+      "A previous submission with a similar agency name was detected.\n\n" +
+      "Do you want to UPDATE the previous information?"
+    );
 
-  if (!ok) {
-    btn.disabled = true;
-    btn.classList.remove("enabled");
-    helper.innerText = "Please complete all mandatory fields.";
-    if (firstError) {
-      firstError.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-    return;
+    if (ok) enableUpdateMode();
   }
 
-  if (!consent.checked) {
-    btn.disabled = true;
-    btn.classList.remove("enabled");
-    helper.innerText = "Please confirm consent to proceed.";
-    return;
-  }
-
-  btn.disabled = false;
-  btn.classList.add("enabled");
-  helper.innerText = "";
+  localStorage.setItem("LAST_AGENCY_KEY", key);
 }
 
-mandatoryFields.forEach(f => {
-  document.getElementById(f.id).addEventListener("input", updateState);
-});
+/* UPDATE MODE */
+function enableUpdateMode(){
+  UPDATE_MODE = true;
+  formTitle.innerText = "✏️ AGENCY INFORMATION UPDATE";
+  formNote.innerText =
+    "You are updating previously submitted information. This action is allowed once only.";
+}
 
-function submitForm() {
+/* STATE */
+function updateState(){
+  const ok =
+    agency.value && pic1.value && contact1.value && whatsapp.value;
+
+  submitBtn.disabled = !ok || !consent.checked;
+  submitBtn.classList.toggle("enabled", ok && consent.checked);
+
+  helperText.innerText = !ok
+    ? "Please complete all mandatory fields."
+    : !consent.checked
+      ? "Please confirm consent to proceed."
+      : "";
+}
+
+/* SUBMIT */
+function submitForm(){
   updateState();
   if (submitBtn.disabled) return false;
 
-  formBox.style.display = "none";
-  successBox.style.display = "block";
-  watermark.style.display = "block";
+  if (UPDATE_MODE) UPDATE_USED = true;
 
-  summaryBox.innerHTML =
-    `<div><b>Agency:</b> ${agency.value}</div>
-     <div><b>PIC Name 1:</b> ${pic1.value}</div>
-     ${pic2.value ? `<div><b>PIC Name 2:</b> ${pic2.value}</div>` : ""}
-     <div><b>Contact (Mandatory):</b> ${contact1.value}</div>
-     ${contact2.value ? `<div><b>Contact (Optional):</b> ${contact2.value}</div>` : ""}
-     <div><b>WhatsApp No:</b> ${whatsapp.value}</div>`;
+  alert(
+    UPDATE_MODE
+      ? "Information updated successfully."
+      : "Information submitted successfully."
+  );
 
   return false;
 }
-
-(function(){
-  const year = new Date().getFullYear();
-  trademark.innerHTML =
-    `© ${year} <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · For Authorized Agency Use`;
-})();
 </script>
 
 </body>
