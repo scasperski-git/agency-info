@@ -10,88 +10,92 @@ html, body {
   height: 100%;
   margin: 0;
 }
-.page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-.main {
-  flex: 1;
-}
-
-:root {
-  --bg: #f4f6f8;
-  --card: #ffffff;
-  --text: #000;
-  --muted: #666;
-  --border: #ccc;
-  --primary: #1e88e5;
-}
-body.dark {
-  --bg: #121212;
-  --card: #1e1e1e;
-  --text: #f1f1f1;
-  --muted: #aaa;
-  --border: #333;
-}
-
 body {
   font-family: Arial, sans-serif;
-  background: var(--bg);
+  background: linear-gradient(180deg, #eef1f4, #f4f6f8);
   padding: 20px;
-  color: var(--text);
+  color: #000;
 }
 
 .container {
   max-width: 420px;
   margin: auto;
-  background: var(--card);
+  background: #ffffff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   position: relative;
 }
 
-h2 { text-align: center; margin-bottom: 10px; }
-label { font-weight: bold; }
+h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+label {
+  font-weight: bold;
+}
 
 input[type="text"],
 input[type="tel"] {
   width: 100%;
   padding: 10px;
-  margin: 5px 0 15px;
-  border: 1px solid var(--border);
+  margin: 5px 0 4px;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  background: var(--card);
-  color: var(--text);
   text-transform: uppercase;
+  box-sizing: border-box;
 }
 
 ::placeholder {
   text-transform: none;
-  color: var(--muted);
+  color: #999;
 }
 
+/* ERROR */
+input.error {
+  border-color: #e53935;
+  background: #fff5f5;
+}
+
+.errorText {
+  font-size: 12px;
+  color: #e53935;
+  margin-bottom: 8px;
+  display: none;
+}
+
+/* CONSENT */
 .consent {
   font-size: 13px;
-  margin-bottom: 15px;
-  color: var(--muted);
+  margin: 10px 0;
+  color: #555;
 }
 
+/* BUTTON */
 button {
   width: 100%;
   padding: 12px;
-  background: var(--primary);
+  background: #1e88e5;
   color: white;
   border: none;
   border-radius: 5px;
   font-size: 16px;
-  cursor: not-allowed;
   opacity: 0.6;
+  cursor: not-allowed;
 }
+
 button.enabled {
-  cursor: pointer;
   opacity: 1;
+  cursor: pointer;
+}
+
+/* DISABLE REASON */
+.helper {
+  font-size: 12px;
+  color: #777;
+  margin-top: 6px;
+  text-align: center;
 }
 
 /* SUCCESS */
@@ -101,121 +105,81 @@ button.enabled {
 }
 .successIcon svg {
   width: 100%;
-  animation: pop 0.5s ease;
 }
-@keyframes pop {
-  0% { transform: scale(0.3); opacity: 0; }
-  80% { transform: scale(1.1); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.summary {
-  text-align: left;
-  font-size: 14px;
-  margin-top: 15px;
-}
-.ref { font-weight: bold; margin-top: 10px; }
-
-/* WATERMARK */
 .watermark {
   position: absolute;
   top: 45%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-25deg);
   font-size: 48px;
-  color: rgba(0,0,0,0.08);
+  color: rgba(0,0,0,0.06);
   font-weight: bold;
-  pointer-events: none;
   display: none;
+  pointer-events: none;
 }
 
-/* DARK MODE – BELOW FORM */
-.darkbar {
-  max-width: 420px;
-  margin: 8px auto 0;
-  text-align: right;
-  font-size: 12px;
+.summary {
+  font-size: 14px;
+  margin-top: 15px;
 }
 
-/* FOOTER */
 .footer {
+  margin-top: 25px;
   text-align: center;
   font-size: 11px;
-  color: var(--muted);
-  margin-top: 20px;
+  color: #888;
 }
 .divider {
   height: 2px;
-  background: linear-gradient(to right, transparent, var(--primary), transparent);
+  background: linear-gradient(to right, transparent, #1e88e5, transparent);
   margin-bottom: 10px;
 }
 .footer a {
-  color: var(--muted);
+  color: #888;
   text-decoration: none;
-}
-.privacy {
-  font-size: 11px;
-  margin-top: 6px;
 }
 </style>
 </head>
 
 <body>
-<div class="page">
-<div class="main">
 
 <!-- FORM -->
 <div class="container" id="formBox">
   <h2>📄 AGENCY INFORMATION SUBMISSION</h2>
 
-  <form oninput="checkMandatory()" onsubmit="return submitForm();">
+  <form onsubmit="return submitForm();">
 
-<label>Agency Name (Mandatory)</label>
-<input type="text" id="agency"
-  placeholder="Example: ABC DEBT SDN BHD"
-  required>
+    <label>Agency Name (Mandatory)</label>
+    <input type="text" id="agency" placeholder="Example: ABC DEBT SDN BHD">
+    <div class="errorText" id="err_agency">This field is required</div>
 
-<label>PIC Name 1 (Mandatory)</label>
-<input type="text" id="pic1"
-  placeholder="Example: MR JOHN DOE"
-  required>
+    <label>PIC Name 1 (Mandatory)</label>
+    <input type="text" id="pic1" placeholder="Example: MR JOHN DOE">
+    <div class="errorText" id="err_pic1">This field is required</div>
 
-<label>PIC Name 2 (Optional)</label>
-<input type="text" id="pic2"
-  placeholder="Example: MISS JANE DOE">
+    <label>PIC Name 2 (Optional)</label>
+    <input type="text" id="pic2" placeholder="Example: MISS JANE DOE">
 
-<label>Contact No (Mandatory)</label>
-<input type="tel" id="contact1"
-  placeholder="Example: 0123456789"
-  required
-  oninput="formatPhone(this)">
+    <label>Contact No (Mandatory)</label>
+    <input type="tel" id="contact1" placeholder="Example: 0123456789" oninput="formatPhone(this)">
+    <div class="errorText" id="err_contact1">This field is required</div>
 
-<label>Contact No (Optional)</label>
-<input type="tel" id="contact2"
-  placeholder="Example: 0123456789"
-  oninput="formatPhone(this)">
+    <label>Contact No (Optional)</label>
+    <input type="tel" id="contact2" placeholder="Example: 0123456789" oninput="formatPhone(this)">
 
-<label>WhatsApp No (Mandatory)</label>
-<input type="tel" id="whatsapp"
-  placeholder="Example: 0123456789"
-  required
-  oninput="formatPhone(this)">
-
+    <label>WhatsApp No (Mandatory)</label>
+    <input type="tel" id="whatsapp" placeholder="Example: 0123456789" oninput="formatPhone(this)">
+    <div class="errorText" id="err_whatsapp">This field is required</div>
 
     <div class="consent">
-      <input type="checkbox" id="consent" disabled>
+      <input type="checkbox" id="consent" onclick="updateState()">
       I confirm that the information provided is accurate and consent to its use
       for official communication purposes.
     </div>
 
-    <button type="submit" id="submitBtn" disabled>Submit</button>
+    <button type="submit" id="submitBtn">Submit</button>
+    <div class="helper" id="helperText"></div>
   </form>
-</div>
-
-<!-- DARK MODE (BELOW BOX, RIGHT) -->
-<div class="darkbar">
-  🌙 Dark Mode
-  <input type="checkbox" id="darkToggle" onchange="toggleDark()">
 </div>
 
 <!-- SUCCESS -->
@@ -230,10 +194,9 @@ button.enabled {
   </div>
 
   <h2 style="text-align:center;">Submission Successful</h2>
-  <div class="ref" id="refDisplay"></div>
-  <div class="summary" id="summaryBox"></div>
+  <div id="summaryBox" class="summary"></div>
 
-  <div class="consent" style="margin-top:15px;">
+  <div class="consent">
     ✔ Consent confirmed for official communication purposes.
   </div>
 
@@ -242,31 +205,24 @@ button.enabled {
   </p>
 </div>
 
-</div>
-
 <!-- FOOTER -->
 <div class="footer">
   <div class="divider"></div>
   <div id="trademark"></div>
-  <div class="privacy">
+  <div>
     Information submitted is collected solely for communication and
     administrative record purposes.
   </div>
 </div>
-</div>
 
 <script>
-/* DARK MODE */
-function toggleDark() {
-  document.body.classList.toggle("dark");
-  localStorage.setItem("dark", document.body.classList.contains("dark"));
-}
-if (localStorage.getItem("dark") === "true") {
-  document.body.classList.add("dark");
-  darkToggle.checked = true;
-}
+const mandatoryFields = [
+  { id: "agency", err: "err_agency" },
+  { id: "pic1", err: "err_pic1" },
+  { id: "contact1", err: "err_contact1" },
+  { id: "whatsapp", err: "err_whatsapp" }
+];
 
-/* PHONE */
 function formatPhone(el) {
   let v = el.value.replace(/\D/g,'');
   if (v.startsWith("0")) v = "6" + v;
@@ -274,40 +230,60 @@ function formatPhone(el) {
   el.value = v;
 }
 
-/* MANDATORY CHECK */
-function checkMandatory() {
-  const ok =
-    agency.value &&
-    pic1.value &&
-    contact1.value &&
-    whatsapp.value;
+function updateState() {
+  let firstError = null;
+  let ok = true;
 
-  consent.disabled = !ok;
-  submitBtn.disabled = !ok || !consent.checked;
-  submitBtn.classList.toggle("enabled", ok && consent.checked);
+  mandatoryFields.forEach(f => {
+    const input = document.getElementById(f.id);
+    const err = document.getElementById(f.err);
+
+    if (!input.value.trim()) {
+      ok = false;
+      input.classList.add("error");
+      err.style.display = "block";
+      if (!firstError) firstError = input;
+    } else {
+      input.classList.remove("error");
+      err.style.display = "none";
+    }
+  });
+
+  const helper = document.getElementById("helperText");
+  const btn = document.getElementById("submitBtn");
+
+  if (!ok) {
+    btn.disabled = true;
+    btn.classList.remove("enabled");
+    helper.innerText = "Please complete all mandatory fields.";
+    if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  if (!consent.checked) {
+    btn.disabled = true;
+    btn.classList.remove("enabled");
+    helper.innerText = "Please confirm consent to proceed.";
+    return;
+  }
+
+  btn.disabled = false;
+  btn.classList.add("enabled");
+  helper.innerText = "";
 }
 
-/* REF */
-function generateRef() {
-  const d = new Date();
-  return "AGY-" +
-    d.getFullYear() +
-    String(d.getMonth()+1).padStart(2,"0") +
-    String(d.getDate()).padStart(2,"0") + "-" +
-    String(d.getHours()).padStart(2,"0") +
-    String(d.getMinutes()).padStart(2,"0") +
-    String(d.getSeconds()).padStart(2,"0");
-}
+mandatoryFields.forEach(f => {
+  document.getElementById(f.id).addEventListener("input", updateState);
+});
 
-/* SUBMIT */
 function submitForm() {
-  const ref = generateRef();
+  updateState();
+  if (submitBtn.disabled) return false;
 
   formBox.style.display = "none";
   successBox.style.display = "block";
   watermark.style.display = "block";
 
-  refDisplay.innerText = "Reference No: " + ref;
   summaryBox.innerHTML =
     `<div><b>Agency:</b> ${agency.value}</div>
      <div><b>PIC Name 1:</b> ${pic1.value}</div>
@@ -319,8 +295,7 @@ function submitForm() {
   return false;
 }
 
-/* FOOTER */
-(function () {
+(function(){
   const year = new Date().getFullYear();
   trademark.innerHTML =
     `© ${year} <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · For Authorized Agency Use`;
