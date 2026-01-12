@@ -14,42 +14,34 @@ html, body {
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(180deg, #eef1f4, #f4f6f8);
-  padding: 15px 20px 20px; /* atas dikurangkan */
+  padding: 20px;
   color: #000;
 }
 
 /* ===== CONTAINER ===== */
 .container {
   max-width: 420px;
-  margin: 10px auto; /* naikkan container */
+  margin: auto;
   background: #ffffff;
-  padding: 18px 20px 20px;
+  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   position: relative;
 }
 
-/* SUCCESS PAGE SEDIKIT BESAR */
+/* SUCCESS SIZE (SLIGHTLY BIGGER) */
 .success-container {
   max-width: 520px;
 }
 
-/* ===== HEADER ===== */
 h2 {
   text-align: center;
-  margin: 0 0 8px 0; /* buang margin atas */
-  padding-top: 0;
-}
-
-.subnote {
-  text-align: center;
-  font-size: 12px;
-  color: #666;
   margin-bottom: 10px;
 }
 
-/* ===== FORM ===== */
-label { font-weight: bold; }
+label {
+  font-weight: bold;
+}
 
 input[type="text"],
 input[type="tel"] {
@@ -67,11 +59,12 @@ input[type="tel"] {
   color: #999;
 }
 
-/* ERROR */
+/* ===== ERROR STATE ===== */
 input.error {
   border-color: #e53935;
   background: #fff5f5;
 }
+
 .errorText {
   font-size: 12px;
   color: #e53935;
@@ -79,14 +72,14 @@ input.error {
   display: none;
 }
 
-/* CONSENT */
+/* ===== CONSENT ===== */
 .consent {
   font-size: 13px;
   margin: 10px 0;
   color: #555;
 }
 
-/* BUTTON */
+/* ===== BUTTON ===== */
 button {
   width: 100%;
   padding: 12px;
@@ -98,12 +91,13 @@ button {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
 button.enabled {
   opacity: 1;
   cursor: pointer;
 }
 
-/* HELPER */
+/* ===== HELPER TEXT ===== */
 .helper {
   font-size: 12px;
   color: #777;
@@ -111,11 +105,15 @@ button.enabled {
   text-align: center;
 }
 
-/* SUCCESS */
+/* ===== SUCCESS ===== */
 .successIcon {
   margin: 15px auto;
   width: 70px;
 }
+.successIcon svg {
+  width: 100%;
+}
+
 .watermark {
   position: absolute;
   top: 45%;
@@ -144,7 +142,7 @@ button.enabled {
 .divider {
   height: 2px;
   background: linear-gradient(to right, transparent, #1e88e5, transparent);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .footer a {
   color: #888;
@@ -157,13 +155,12 @@ button.enabled {
 
 <!-- FORM -->
 <div class="container" id="formBox">
-  <h2 id="formTitle">📄 AGENCY INFORMATION SUBMISSION</h2>
-  <div class="subnote" id="formNote"></div>
+  <h2>📄 AGENCY INFORMATION SUBMISSION</h2>
 
   <form onsubmit="return submitForm();">
 
     <label>Agency Name (Mandatory)</label>
-    <input type="text" id="agency" placeholder="Example: ABC DEBT SDN BHD" onblur="checkDuplicate()">
+    <input type="text" id="agency" placeholder="Example: ABC DEBT SDN BHD">
     <div class="errorText" id="err_agency">This field is required</div>
 
     <label>PIC Name 1 (Mandatory)</label>
@@ -219,7 +216,7 @@ button.enabled {
   </p>
 </div>
 
-<!-- FOOTER (RESTORED) -->
+<!-- FOOTER -->
 <div class="footer">
   <div class="divider"></div>
   <div id="trademark"></div>
@@ -244,37 +241,6 @@ function formatPhone(el) {
   el.value = v;
 }
 
-/* DUPLICATE DETECT (FIRST WORD) */
-let UPDATE_MODE = false;
-let UPDATE_USED = false;
-
-function checkDuplicate(){
-  if (UPDATE_USED) return;
-  const name = agency.value.trim();
-  if (!name) return;
-
-  const key = name.split(" ")[0].toUpperCase();
-  const lastKey = localStorage.getItem("LAST_AGENCY_KEY");
-
-  if (lastKey && lastKey === key) {
-    const ok = confirm(
-      "Possible duplicate detected.\n\n" +
-      "A previous submission with a similar agency name was detected.\n\n" +
-      "Do you want to UPDATE the previous information?"
-    );
-    if (ok) enableUpdateMode();
-  }
-  localStorage.setItem("LAST_AGENCY_KEY", key);
-}
-
-function enableUpdateMode(){
-  UPDATE_MODE = true;
-  formTitle.innerText = "✏️ AGENCY INFORMATION UPDATE";
-  formNote.innerText =
-    "You are updating previously submitted information. This action is allowed once only.";
-}
-
-/* VALIDATION + SCROLL */
 function updateState() {
   let firstError = null;
   let ok = true;
@@ -294,9 +260,13 @@ function updateState() {
     }
   });
 
+  const btn = document.getElementById("submitBtn");
+  const helper = document.getElementById("helperText");
+
   if (!ok) {
-    submitBtn.disabled = true;
-    helperText.innerText = "Please complete all mandatory fields.";
+    btn.disabled = true;
+    btn.classList.remove("enabled");
+    helper.innerText = "Please complete all mandatory fields.";
     if (firstError) {
       firstError.scrollIntoView({ behavior: "smooth", block: "center" });
     }
@@ -304,22 +274,24 @@ function updateState() {
   }
 
   if (!consent.checked) {
-    submitBtn.disabled = true;
-    helperText.innerText = "Please confirm consent to proceed.";
+    btn.disabled = true;
+    btn.classList.remove("enabled");
+    helper.innerText = "Please confirm consent to proceed.";
     return;
   }
 
-  submitBtn.disabled = false;
-  submitBtn.classList.add("enabled");
-  helperText.innerText = "";
+  btn.disabled = false;
+  btn.classList.add("enabled");
+  helper.innerText = "";
 }
 
-/* SUBMIT */
+mandatoryFields.forEach(f => {
+  document.getElementById(f.id).addEventListener("input", updateState);
+});
+
 function submitForm() {
   updateState();
   if (submitBtn.disabled) return false;
-
-  UPDATE_USED = UPDATE_MODE;
 
   formBox.style.display = "none";
   successBox.style.display = "block";
@@ -336,7 +308,6 @@ function submitForm() {
   return false;
 }
 
-/* FOOTER TEXT */
 (function(){
   const year = new Date().getFullYear();
   trademark.innerHTML =
