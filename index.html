@@ -314,6 +314,23 @@ function submitForm() {
 
   const ref = generateRef();
 
+    const data = new URLSearchParams();
+  data.append("ref", ref);
+data.append("agency", agency.value.toUpperCase());
+data.append("pic1", pic1.value.toUpperCase());
+data.append("pic2", pic2.value ? pic2.value.toUpperCase() : "");
+data.append("contact1", contact1.value);
+data.append("contact2", contact2.value);
+data.append("whatsapp", whatsapp.value);
+data.append("consent", "YES");
+
+
+  fetch("https://script.google.com/macros/s/AKfycbzEVWi0kgI1qSKQeWWdCJzj8e8qoqNpCUDRZJoPd-e7fQHTedMTegESaVziYYfemLdG/exec", {
+    method: "POST",
+    body: data
+  });
+
+
   formBox.style.display = "none";
   successBox.style.display = "block";
   watermark.style.display = "block";
