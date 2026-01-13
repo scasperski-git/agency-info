@@ -375,36 +375,72 @@ mandatoryFields.forEach(f=>{
 });
 
 /* ===== SUBMIT ===== */
+<script>
 function submitForm(){
   updateState();
   if(submitBtn.disabled) return false;
 
-  const ref=generateRef();
-  const data=new URLSearchParams();
-  data.append("ref",ref);
-  data.append("agency",agency.value.toUpperCase());
-  data.append("pic1",pic1.value.toUpperCase());
-  data.append("pic2",pic2.value.toUpperCase());
-  data.append("contact1",contact1.value);
-  data.append("contact2",contact2.value);
-  data.append("whatsapp",whatsapp.value);
-  data.append("consent","YES");
+  const ref = generateRef();
+  const data = new URLSearchParams();
 
-  fetch("https://script.google.com/macros/s/AKfycbz5AF9_WCXVX1xv-WbIZu7ig4XX4lqSxpy7Edhq4d5WvsspFUYiXpNeY_C75l50QJmS/exec",
-    {method:"POST",body:data});
+  data.append("ref", ref);
+  data.append("agency", agency.value.toUpperCase());
+  data.append("pic1", pic1.value.toUpperCase());
+  data.append("pic2", pic2.value.toUpperCase());
+  data.append("contact1", contact1.value);
+  data.append("contact2", contact2.value);
+  data.append("whatsapp", whatsapp.value);
+  data.append("consent", "YES");
+  data.append("update", "NO");
+
+  fetch(SCRIPT_URL,{method:"POST",body:data})
+  .then(r=>r.json())
+  .then(res=>{
+
+    if(res.status==="DUPLICATE"){
+      if(confirm("Agency record already exists.\nDo you want to update the information?")){
+        data.set("update","YES");
+
+        fetch(SCRIPT_URL,{method:"POST",body:data})
+        .then(r=>r.json())
+        .then(res2=>{
+          if(res2.status==="UPDATED"){
+            showSuccess(res2.ref, true, res2.updateInfo);
+          }else{
+            alert("Update limit reached. Please contact administrator.");
+            location.reload();
+          }
+        });
+
+      }else{
+        location.reload();
+      }
+      return;
+    }
+
+    // NEW SUBMISSION
+    showSuccess(res.ref, false, "NEW SUBMISSION");
+  });
+
+  return false;
+}
+
+function showSuccess(ref, isUpdate, statusText){
 
   formBox.style.display="none";
   successBox.style.display="block";
   watermark.style.display="block";
 
-  refDisplay.innerText="REFERENCE NO: "+ref;
-  summaryBox.innerHTML=
+  refDisplay.innerText = "REFERENCE NO: " + ref;
+
+  summaryBox.innerHTML =
     `<div><b>AGENCY:</b> ${agency.value.toUpperCase()}</div>
      <div><b>PIC NAME 1 (MANDATORY):</b> ${pic1.value.toUpperCase()}</div>
-     ${pic2.value?`<div><b>PIC NAME 2 (OPTIONAL):</b> ${pic2.value.toUpperCase()}</div>`:""}
+     ${pic2.value ? `<div><b>PIC NAME 2 (OPTIONAL):</b> ${pic2.value.toUpperCase()}</div>` : ""}
      <div><b>CONTACT (MANDATORY):</b> ${contact1.value}</div>
-     ${contact2.value?`<div><b>CONTACT (OPTIONAL):</b> ${contact2.value}</div>`:""}
-     <div><b>WHATSAPP NO (MANDATORY):</b> ${whatsapp.value}</div>`;
+     ${contact2.value ? `<div><b>CONTACT (OPTIONAL):</b> ${contact2.value}</div>` : ""}
+     <div><b>WHATSAPP NO (MANDATORY):</b> ${whatsapp.value}</div>
+     <div><b>STATUS:</b> ${statusText}</div>`;
 
   return false;
 }
