@@ -400,11 +400,11 @@ function submitForm(){
   refDisplay.innerText="REFERENCE NO: "+ref;
   summaryBox.innerHTML=
     `<div><b>AGENCY:</b> ${agency.value.toUpperCase()}</div>
-     <div><b>PIC NAME 1:</b> ${pic1.value.toUpperCase()}</div>
-     ${pic2.value?`<div><b>PIC NAME 2:</b> ${pic2.value.toUpperCase()}</div>`:""}
+     <div><b>PIC NAME 1 (MANDATORY):</b> ${pic1.value.toUpperCase()}</div>
+     ${pic2.value?`<div><b>PIC NAME 2 (OPTIONAL):</b> ${pic2.value.toUpperCase()}</div>`:""}
      <div><b>CONTACT (MANDATORY):</b> ${contact1.value}</div>
      ${contact2.value?`<div><b>CONTACT (OPTIONAL):</b> ${contact2.value}</div>`:""}
-     <div><b>WHATSAPP NO:</b> ${whatsapp.value}</div>`;
+     <div><b>WHATSAPP NO (MANDATORY):</b> ${whatsapp.value}</div>`;
 
   return false;
 }
