@@ -241,14 +241,14 @@ var FORM_ENABLED = true;
     </div>
     <div class="errorText" id="err_agency">This field is required</div>
 
-    <label>PIC Name 1 (Mandatory) <span class="req">*</span></label>
+    <label>Officer Name 1 (Mandatory) <span class="req">*</span></label>
     <div class="input-wrap">
       <span>👤</span>
       <input type="text" id="pic1" placeholder="Example: MR JOHN DOE">
     </div>
     <div class="errorText" id="err_pic1">This field is required</div>
 
-    <label>PIC Name 2 (Optional)</label>
+    <label>Officer Name 2 (Optional)</label>
     <div class="input-wrap">
       <span>👤</span>
       <input type="text" id="pic2" placeholder="Example: MISS JANE DOE">
@@ -307,7 +307,7 @@ var FORM_ENABLED = true;
   </div>
 
   <p style="text-align:center;font-size:13px;">
-    You may safely close this page.
+    You may safely close this page. Thank You!
   </p>
 </div>
 
@@ -399,12 +399,12 @@ function submitForm(){
 
   refDisplay.innerText="REFERENCE NO: "+ref;
   summaryBox.innerHTML=
-    `<div><b>AGENCY:</b> ${agency.value.toUpperCase()}</div>
-     <div><b>PIC NAME 1:</b> ${pic1.value.toUpperCase()}</div>
-     ${pic2.value?`<div><b>PIC NAME 2:</b> ${pic2.value.toUpperCase()}</div>`:""}
-     <div><b>CONTACT (MANDATORY):</b> ${contact1.value}</div>
-     ${contact2.value?`<div><b>CONTACT (OPTIONAL):</b> ${contact2.value}</div>`:""}
-     <div><b>WHATSAPP NO:</b> ${whatsapp.value}</div>`;
+    `<div><b>AGENCY NAME:</b> ${agency.value.toUpperCase()}</div>
+     <div><b>OFFICER NAME 1:</b> ${pic1.value.toUpperCase()}</div>
+     ${pic2.value?`<div><b>OFFICER NAME 2:</b> ${pic2.value.toUpperCase()}</div>`:""}
+     <div><b>CONTACT NO (MANDATORY):</b> ${contact1.value}</div>
+     ${contact2.value?`<div><b>CONTACT NO (OPTIONAL):</b> ${contact2.value}</div>`:""}
+     <div><b>WHATSAPP NO (MANDATORY):</b> ${whatsapp.value}</div>`;
 
   return false;
 }
@@ -423,7 +423,7 @@ function generateRef(){
 (function(){
   const year=new Date().getFullYear();
   trademark.innerHTML=
-    `© ${year} <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · For Authorized Agency Use`;
+    `© ${year} <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · For Authorized Agency Use. v1.1`;
 })();
 </script>
 
