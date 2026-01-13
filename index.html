@@ -37,7 +37,6 @@ body{
   background:linear-gradient(90deg,#1e88e5,#42a5f5);
   border-radius:10px 10px 0 0;
 }
-
 .success-container{ max-width:520px; }
 
 @keyframes fade{
@@ -49,12 +48,7 @@ body{
 h2{ text-align:center; margin:6px 0 12px }
 label{ font-size:12px; color:#555; font-weight:bold }
 .req{ color:#e53935 }
-.helper{
-  font-size:12px;
-  color:#777;
-  margin-top:6px;
-  text-align:center;
-}
+.helper{ font-size:12px; color:#777; margin-top:6px; text-align:center; }
 
 /* ===== INPUT ===== */
 .input-wrap{ position:relative }
@@ -74,10 +68,7 @@ input{
   box-sizing:border-box;
   text-transform:uppercase;
 }
-::placeholder{
-  text-transform:none;
-  color:#999;
-}
+::placeholder{ text-transform:none; color:#999; }
 input:focus{
   border-color:#1e88e5;
   box-shadow:0 0 0 2px rgba(30,136,229,.15);
@@ -87,7 +78,6 @@ input.error{
   border-color:#e53935;
   background:#fff5f5;
 }
-
 .errorText{
   font-size:11px;
   color:#e53935;
@@ -169,8 +159,7 @@ button.enabled:hover{
 }
 .watermark{
   position:absolute;
-  top:45%;
-  left:50%;
+  top:45%; left:50%;
   transform:translate(-50%,-50%) rotate(-25deg);
   font-size:48px;
   color:rgba(0,0,0,0.06);
@@ -213,120 +202,107 @@ button.enabled:hover{
 <body>
 
 <script>
-/* ===== ON true / OFF MODE false ===== */
+/* ===== ON true / OFF false ===== */
 var FORM_ENABLED = true;
 </script>
 
 <!-- MAINTENANCE -->
 <div class="maintenance" id="maintenanceBox" style="display:none;">
   <h2>🚧 Temporarily Unavailable</h2>
-  <p>
-    This submission form is currently unavailable.<br><br>
-    Please contact the administrator.
-  </p>
+  <p>This submission form is currently unavailable.<br><br>
+     Please contact the administrator.</p>
 </div>
 
 <!-- FORM -->
 <div class="container" id="formBox">
-  <h2>📄 AGENCY CONTACT INFO SUBMISSION</h2>
+<h2>📄 AGENCY CONTACT INFO SUBMISSION</h2>
 
-  <form onsubmit="return submitForm();">
+<form onsubmit="return submitForm();">
 
-    <div class="section-title">Agency Information</div>
+<div class="section-title">Agency Information</div>
 
-    <label>Agency Name (Mandatory) <span class="req">*</span></label>
-    <div class="input-wrap">
-      <span>🏢</span>
-      <input type="text" id="agency" placeholder="Example: ABC DEBT SDN BHD">
-    </div>
-    <div class="errorText" id="err_agency">This field is required</div>
+<label>Agency Name <span class="req">*</span></label>
+<div class="input-wrap">
+<span>🏢</span>
+<input type="text" id="agency" placeholder="Example: ABC DEBT SDN BHD">
+</div>
+<div class="errorText" id="err_agency">This field is required</div>
 
-    <label>PIC Name 1 (Mandatory) <span class="req">*</span></label>
-    <div class="input-wrap">
-      <span>👤</span>
-      <input type="text" id="pic1" placeholder="Example: MR JOHN DOE">
-    </div>
-    <div class="errorText" id="err_pic1">This field is required</div>
+<label>PIC Name 1 <span class="req">*</span></label>
+<div class="input-wrap">
+<span>👤</span>
+<input type="text" id="pic1" placeholder="Example: MR JOHN DOE">
+</div>
+<div class="errorText" id="err_pic1">This field is required</div>
 
-    <label>PIC Name 2 (Optional)</label>
-    <div class="input-wrap">
-      <span>👤</span>
-      <input type="text" id="pic2" placeholder="Example: MISS JANE DOE">
-    </div>
+<label>PIC Name 2 (Optional)</label>
+<div class="input-wrap">
+<span>👤</span>
+<input type="text" id="pic2">
+</div>
 
-    <div class="section-title">Contact Information</div>
+<div class="section-title">Contact Information</div>
 
-    <label>Contact No (Mandatory) <span class="req">*</span></label>
-    <div class="input-wrap">
-      <span>📞</span>
-      <input type="tel" id="contact1" placeholder="Example: 0123456789" oninput="formatPhone(this)">
-    </div>
-    <div class="errorText" id="err_contact1">This field is required</div>
+<label>Contact No <span class="req">*</span></label>
+<div class="input-wrap">
+<span>📞</span>
+<input type="tel" id="contact1" oninput="formatPhone(this)">
+</div>
+<div class="errorText" id="err_contact1">This field is required</div>
 
-    <label>Contact No (Optional)</label>
-    <div class="input-wrap">
-      <span>📞</span>
-      <input type="tel" id="contact2" placeholder="Example: 0123456789" oninput="formatPhone(this)">
-    </div>
+<label>Contact No (Optional)</label>
+<div class="input-wrap">
+<span>📞</span>
+<input type="tel" id="contact2" oninput="formatPhone(this)">
+</div>
 
-    <label>WhatsApp No (Mandatory) <span class="req">*</span></label>
-    <div class="input-wrap">
-      <span>💬</span>
-      <input type="tel" id="whatsapp" placeholder="Example: 0123456789" oninput="formatPhone(this)">
-    </div>
-    <div class="errorText" id="err_whatsapp">This field is required</div>
+<label>WhatsApp No <span class="req">*</span></label>
+<div class="input-wrap">
+<span>💬</span>
+<input type="tel" id="whatsapp" oninput="formatPhone(this)">
+</div>
+<div class="errorText" id="err_whatsapp">This field is required</div>
 
-    <div class="consent">
-      <input type="checkbox" id="consent" onclick="updateState()">
-      I confirm that the information provided is accurate and consent to its use
-      for official communication purposes.
-    </div>
+<div class="consent">
+<input type="checkbox" id="consent" onclick="updateState()">
+I confirm the information is accurate.
+</div>
 
-    <button type="submit" id="submitBtn">Submit</button>
-    <div class="helper" id="helperText"></div>
-  </form>
+<button type="submit" id="submitBtn" disabled>Submit</button>
+<div class="helper" id="helperText"></div>
+
+</form>
 </div>
 
 <!-- SUCCESS -->
 <div class="container success-container" id="successBox" style="display:none;">
-  <div class="watermark" id="watermark">SUBMITTED</div>
+<div class="watermark" id="watermark">SUBMITTED</div>
 
-  <div class="successIcon">
-    <svg viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10" stroke="#1e88e5" stroke-width="2"/>
-      <path d="M7 12l3 3 7-7" stroke="#1e88e5" stroke-width="2"/>
-    </svg>
-  </div>
+<div class="successIcon">
+<svg viewBox="0 0 24 24" fill="none">
+<circle cx="12" cy="12" r="10" stroke="#1e88e5" stroke-width="2"/>
+<path d="M7 12l3 3 7-7" stroke="#1e88e5" stroke-width="2"/>
+</svg>
+</div>
 
-  <h2>Submission Successful</h2>
-  <div class="ref" id="refDisplay"></div>
-  <div class="summary" id="summaryBox"></div>
+<h2>Submission Successful</h2>
+<div class="ref" id="refDisplay"></div>
+<div class="summary" id="summaryBox"></div>
 
-  <div class="consent" style="margin-top:15px;">
-    ✔ CONSENT CONFIRMED FOR OFFICIAL COMMUNICATION PURPOSES.
-  </div>
-
-  <p style="text-align:center;font-size:13px;">
-    You may safely close this page.
-  </p>
+<p style="text-align:center;font-size:13px;">You may safely close this page.</p>
 </div>
 
 <!-- FOOTER -->
 <div class="footer">
-  <div class="divider"></div>
-  <div id="trademark"></div>
-  <div>
-    Information submitted is collected solely for communication and
-    administrative record purposes.
-  </div>
+<div class="divider"></div>
+<div id="trademark"></div>
 </div>
 
 <script>
-/* ===== PAGE LOAD ===== */
+/* ===== LOAD ===== */
 window.onload=function(){
   if(!FORM_ENABLED){
     formBox.style.display="none";
-    successBox.style.display="none";
     maintenanceBox.style.display="block";
   }
 };
@@ -341,8 +317,8 @@ const mandatoryFields=[
 
 function formatPhone(el){
   let v=el.value.replace(/\D/g,'');
-  if(v.startsWith("0"))v="6"+v;
-  if(!v.startsWith("6"))v="6"+v;
+  if(v.startsWith("0")) v="6"+v;
+  if(!v.startsWith("6")) v="6"+v;
   el.value=v;
 }
 
@@ -352,96 +328,35 @@ function updateState(){
     const i=document.getElementById(f.id);
     const e=document.getElementById(f.err);
     if(!i.value.trim()){
-      ok=false;
-      i.classList.add("error");
-      e.style.display="block";
+      ok=false; i.classList.add("error"); e.style.display="block";
     }else{
-      i.classList.remove("error");
-      e.style.display="none";
+      i.classList.remove("error"); e.style.display="none";
     }
   });
-
-  submitBtn.disabled=!ok||!consent.checked;
+  submitBtn.disabled=!ok || !consent.checked;
   submitBtn.classList.toggle("enabled",!submitBtn.disabled);
-  helperText.innerText=!ok
-    ?"Please complete all mandatory fields."
-    :!consent.checked
-    ?"Please confirm consent to proceed."
-    :"";
 }
 
-mandatoryFields.forEach(f=>{
-  document.getElementById(f.id).addEventListener("input",updateState);
-});
-
 /* ===== SUBMIT ===== */
-<script>
 function submitForm(){
   updateState();
   if(submitBtn.disabled) return false;
 
-  const ref = generateRef();
-  const data = new URLSearchParams();
-
-  data.append("ref", ref);
-  data.append("agency", agency.value.toUpperCase());
-  data.append("pic1", pic1.value.toUpperCase());
-  data.append("pic2", pic2.value.toUpperCase());
-  data.append("contact1", contact1.value);
-  data.append("contact2", contact2.value);
-  data.append("whatsapp", whatsapp.value);
-  data.append("consent", "YES");
-  data.append("update", "NO");
-
-  fetch(SCRIPT_URL,{method:"POST",body:data})
-  .then(r=>r.json())
-  .then(res=>{
-
-    if(res.status==="DUPLICATE"){
-      if(confirm("Agency record already exists.\nDo you want to update the information?")){
-        data.set("update","YES");
-
-        fetch(SCRIPT_URL,{method:"POST",body:data})
-        .then(r=>r.json())
-        .then(res2=>{
-          if(res2.status==="UPDATED"){
-            showSuccess(res2.ref, true, res2.updateInfo);
-          }else{
-            alert("Update limit reached. Please contact administrator.");
-            location.reload();
-          }
-        });
-
-      }else{
-        location.reload();
-      }
-      return;
-    }
-
-    // NEW SUBMISSION
-    showSuccess(res.ref, false, "NEW SUBMISSION");
-  });
-
-  return false;
-}
-
-function showSuccess(ref, isUpdate, statusText){
-
+  const ref=generateRef();
   formBox.style.display="none";
   successBox.style.display="block";
   watermark.style.display="block";
 
-  refDisplay.innerText = "REFERENCE NO: " + ref;
+  refDisplay.innerText="REFERENCE NO: "+ref;
 
-  summaryBox.innerHTML =
-    `<div><b>AGENCY:</b> ${agency.value.toUpperCase()}</div>
-     <div><b>PIC NAME 1 (MANDATORY):</b> ${pic1.value.toUpperCase()}</div>
-     ${pic2.value ? `<div><b>PIC NAME 2 (OPTIONAL):</b> ${pic2.value.toUpperCase()}</div>` : ""}
-     <div><b>CONTACT (MANDATORY):</b> ${contact1.value}</div>
-     ${contact2.value ? `<div><b>CONTACT (OPTIONAL):</b> ${contact2.value}</div>` : ""}
-     <div><b>WHATSAPP NO (MANDATORY):</b> ${whatsapp.value}</div>
-     <div><b>STATUS:</b> ${statusText}</div>`;
-
+  summaryBox.innerHTML = `
+    <div><b>AGENCY:</b> ${agency.value.toUpperCase()}</div>
+    <div><b>PIC NAME 1:</b> ${pic1.value.toUpperCase()}</div>
+    ${pic2.value ? `<div><b>PIC NAME 2:</b> ${pic2.value.toUpperCase()}</div>` : ""}
+    <div><b>CONTACT:</b> ${contact1.value}</div>
+    ${contact2.value ? `<div><b>CONTACT (OPTIONAL):</b> ${contact2.value}</div>` : ""}
+    <div><b>WHATSAPP:</b> ${whatsapp.value}</div>
+  `;
   return false;
 }
 
@@ -458,8 +373,7 @@ function generateRef(){
 /* FOOTER */
 (function(){
   const year=new Date().getFullYear();
-  trademark.innerHTML=
-    `© ${year} <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · For Authorized Agency Use`;
+  trademark.innerHTML = `© ${year} <a href="https://sczpnet.org" target="_blank">sczpnet.org</a>`;
 })();
 </script>
 
